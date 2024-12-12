@@ -3,3 +3,5 @@ client.py
 emails.db
 authfile
 node_modules/
+.DS_Store
+.vscode/
