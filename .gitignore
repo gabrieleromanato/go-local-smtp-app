@@ -1,0 +1,5 @@
+attachments/*
+client.py
+emails.db
+authfile
+node_modules/
