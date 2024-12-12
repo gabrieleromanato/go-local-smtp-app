@@ -6,6 +6,7 @@ import { getEmails, deleteEmail  } from '@/api/emails';
 import Emails from '@/components/Emails.vue';
 import Pagination from '@/components/Pagination.vue';
 import EmailDetails from '@/components/EmailDetails.vue';
+import EmailForm from '@/components/EmailForm.vue';
 
 const router = useRouter();
 const data = ref({
@@ -24,6 +25,7 @@ const email = ref({
     attachments: []
 });
 const active = ref(false);
+const emailFormVisible = ref(false);
 
 const handleNext = (page) => {
     getEmails(page).then(response => {
@@ -79,6 +81,10 @@ onMounted(() => {
 <template>
   <div class="home-view">
     <section class="container">
+        <div class="actions">
+            <button class="button" @click="emailFormVisible = !emailFormVisible">Send test email</button>
+            <EmailForm :visible="emailFormVisible" />
+        </div>
         <Emails @delete="handleDelete" @select="handleSelect" :emails="data.emails" v-if="data.emails.length > 0" />
         <Pagination :pages="data.pages" :currentPage="data.currentPage" @next="handleNext" @previous="handlePrevious" />
     </section>

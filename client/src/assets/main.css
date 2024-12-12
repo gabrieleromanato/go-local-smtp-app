@@ -169,3 +169,45 @@
   margin-top: 1rem;
   margin-left: 1rem;
 }
+
+.email-form {
+  width: 50%;
+  margin: 0 auto;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.20rem;
+  background-color: #fff;
+  display: none;
+  position: absolute;
+  top: auto;
+  left: 0;
+  z-index: 9999;
+}
+.email-form.visible {
+  display: block;
+}
+
+.actions {
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.actions > button:first-child {
+  margin-bottom: 1rem;
+  margin-left: 2rem;
+}
+
+.form-control-file::-webkit-file-upload-button {
+  visibility: hidden;
+}
+
+.form-control-file::before {
+  content: 'Select files';
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.20rem;
+  background-color: #f4f4f4;
+  cursor: pointer;
+}

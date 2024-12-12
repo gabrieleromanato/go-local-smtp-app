@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"net/smtp"
 )
 
 func FormatDateToMySQL(date string) string {
@@ -36,5 +38,39 @@ func SaveAttachmentToFile(filename string, data []byte) error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func SendEmailViaSMTP(email Email) error {
+	smtpUser := os.Getenv("SMTP_USER")
+	smtpPassword := os.Getenv("SMTP_PASSWORD")
+	smtpHost := os.Getenv("SMTP_SERVER_HOST")
+	smtpPort := os.Getenv("SMTP_SERVER_PORT")
+
+	if smtpUser == "" || smtpPassword == "" || smtpHost == "" || smtpPort == "" {
+		return fmt.Errorf("SMTP credentials or server information are missing")
+	}
+
+	// SMTP server address
+	addr := fmt.Sprintf("%s:%s", smtpHost, smtpPort)
+
+	// Join the recipients as a comma-separated string for the "To" header
+	toHeader := strings.Join(email.To, ", ")
+
+	// Create the email message
+	message := fmt.Sprintf("From: %s\r\n", email.From) +
+		fmt.Sprintf("To: %s\r\n", toHeader) +
+		fmt.Sprintf("Subject: %s\r\n\r\n", email.Subject) +
+		email.Body
+
+	// Auth for plain login
+	auth := smtp.PlainAuth("", smtpUser, smtpPassword, smtpHost)
+
+	// Send the email
+	err := smtp.SendMail(addr, auth, email.From, email.To, []byte(message))
+	if err != nil {
+		return fmt.Errorf("failed to send email: %w", err)
+	}
+
 	return nil
 }
