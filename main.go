@@ -5,6 +5,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"strconv"
 
 	"github.com/emersion/go-smtp"
 	"github.com/gin-gonic/gin"
@@ -26,11 +27,13 @@ func main() {
 
 	go func() {
 		backend := &app.Backend{Store: store}
+		maxMessageSize, _ := strconv.Atoi(os.Getenv("MAX_MESSAGE_SIZE"))
 
 		// Configura il server SMTP
 		server := smtp.NewServer(backend)
 		server.Addr = ":" + os.Getenv("SMTP_SERVER_PORT") // Porta locale
 		server.Domain = os.Getenv("SMTP_SERVER_HOST")
+		server.MaxMessageBytes = int64(maxMessageSize)
 		server.AllowInsecureAuth = true
 
 		// Avvia il server

@@ -1,13 +1,18 @@
 package app
 
 import (
+	"bytes"
 	"crypto/md5"
 	"encoding/base64"
 	"fmt"
+	"io"
+	"mime/multipart"
+	"mime/quotedprintable"
 	"os"
 	"strings"
 
 	"net/smtp"
+	"net/textproto"
 )
 
 func FormatDateToMySQL(date string) string {
@@ -41,7 +46,7 @@ func SaveAttachmentToFile(filename string, data []byte) error {
 	return nil
 }
 
-func SendEmailViaSMTP(email Email) error {
+func SendEmailViaSMTP(email Email, attachments []*multipart.FileHeader) error {
 	smtpUser := os.Getenv("SMTP_USER")
 	smtpPassword := os.Getenv("SMTP_PASSWORD")
 	smtpHost := os.Getenv("SMTP_SERVER_HOST")
@@ -54,21 +59,69 @@ func SendEmailViaSMTP(email Email) error {
 	// SMTP server address
 	addr := fmt.Sprintf("%s:%s", smtpHost, smtpPort)
 
-	// Join the recipients as a comma-separated string for the "To" header
-	toHeader := strings.Join(email.To, ", ")
+	// Create the email buffer
+	var emailBuffer bytes.Buffer
+	writer := multipart.NewWriter(&emailBuffer)
 
-	// Create the email message
-	message := fmt.Sprintf("From: %s\r\n", email.From) +
-		fmt.Sprintf("To: %s\r\n", toHeader) +
-		fmt.Sprintf("Subject: %s\r\n\r\n", email.Subject) +
-		email.Body
+	// Add headers
+	headers := map[string]string{
+		"From":         email.From,
+		"To":           strings.Join(email.To, ", "),
+		"Subject":      email.Subject,
+		"MIME-Version": "1.0",
+		"Content-Type": fmt.Sprintf("multipart/mixed; boundary=%s", writer.Boundary()),
+	}
+
+	for k, v := range headers {
+		emailBuffer.WriteString(fmt.Sprintf("%s: %s\r\n", k, v))
+	}
+	emailBuffer.WriteString("\r\n")
+
+	// Add email body as a part
+	bodyHeader := textproto.MIMEHeader{}
+	bodyHeader.Set("Content-Type", "text/plain; charset=utf-8")
+	bodyHeader.Set("Content-Transfer-Encoding", "quoted-printable")
+	bodyWriter, err := writer.CreatePart(bodyHeader)
+	if err != nil {
+		return fmt.Errorf("failed to create email body part: %w", err)
+	}
+	qpWriter := quotedprintable.NewWriter(bodyWriter)
+	if _, err := qpWriter.Write([]byte(email.Body)); err != nil {
+		return fmt.Errorf("failed to write email body: %w", err)
+	}
+	qpWriter.Close()
+
+	// Add attachments
+	for _, fileHeader := range attachments {
+		file, err := fileHeader.Open()
+		if err != nil {
+			return fmt.Errorf("failed to open attachment %s: %w", fileHeader.Filename, err)
+		}
+		defer file.Close()
+
+		attachmentHeader := textproto.MIMEHeader{}
+		attachmentHeader.Set("Content-Type", fileHeader.Header.Get("Content-Type"))
+		attachmentHeader.Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", fileHeader.Filename))
+		attachmentWriter, err := writer.CreatePart(attachmentHeader)
+		if err != nil {
+			return fmt.Errorf("failed to create attachment part for %s: %w", fileHeader.Filename, err)
+		}
+
+		if _, err := io.Copy(attachmentWriter, file); err != nil {
+			return fmt.Errorf("failed to write attachment %s: %w", fileHeader.Filename, err)
+		}
+	}
+
+	// Close the writer to finalize the email
+	if err := writer.Close(); err != nil {
+		return fmt.Errorf("failed to close multipart writer: %w", err)
+	}
 
 	// Auth for plain login
 	auth := smtp.PlainAuth("", smtpUser, smtpPassword, smtpHost)
 
 	// Send the email
-	err := smtp.SendMail(addr, auth, email.From, email.To, []byte(message))
-	if err != nil {
+	if err := smtp.SendMail(addr, auth, email.From, email.To, emailBuffer.Bytes()); err != nil {
 		return fmt.Errorf("failed to send email: %w", err)
 	}
 

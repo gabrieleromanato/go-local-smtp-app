@@ -1,8 +1,6 @@
 package app
 
 import (
-	"io"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -48,32 +46,10 @@ func SendEmail(store *EmailStore) gin.HandlerFunc {
 			Body:    form.Value["message"][0],
 		}
 		attachments := form.File["attachments"]
-		err := SendEmailViaSMTP(email)
+		err := SendEmailViaSMTP(email, attachments)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
-		}
-		for _, attachment := range attachments {
-			file, _ := attachment.Open()
-			data, _ := io.ReadAll(file)
-			filename := attachment.Filename
-			log.Println("Salvataggio allegato", filename)
-			// Save attachment to file if is greater than 500KB
-			if len(data) > 500000 {
-				destPath := "attachments/" + filename
-				err := SaveAttachmentToFile(destPath, data)
-				if err != nil {
-					c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-					return
-				}
-				err = store.SaveAttachment(email.ID, "attachment", filename, destPath)
-			} else {
-				err = store.SaveAttachment(email.ID, "attachment", filename, ConvertBytesToBase64(data))
-				if err != nil {
-					c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-					return
-				}
-			}
 		}
 		c.JSON(http.StatusOK, gin.H{"message": "Email inviata correttamente"})
 
