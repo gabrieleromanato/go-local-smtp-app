@@ -2,6 +2,7 @@ package app
 
 import (
 	"io"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -56,6 +57,7 @@ func SendEmail(store *EmailStore) gin.HandlerFunc {
 			file, _ := attachment.Open()
 			data, _ := io.ReadAll(file)
 			filename := attachment.Filename
+			log.Println("Salvataggio allegato", filename)
 			// Save attachment to file if is greater than 500KB
 			if len(data) > 500000 {
 				destPath := "attachments/" + filename
