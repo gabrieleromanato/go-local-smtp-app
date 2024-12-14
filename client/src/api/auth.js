@@ -24,3 +24,12 @@ export function getToken() {
 export function isAuthenticated() {
     return !!getToken();
 }
+
+export async function checkToken() {
+    try {
+        const response = await api.get("/check-token");
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+}

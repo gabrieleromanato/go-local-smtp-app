@@ -16,7 +16,7 @@ const message = ref({
 
 const handleFileUpload = (e) => {
     const files = e.target.files;
-    message.attachments = files;
+    message.value.attachments = files;
 };
 
 const handleSubmit = () => {

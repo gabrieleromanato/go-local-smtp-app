@@ -58,11 +58,13 @@ func SendEmail(store *EmailStore) gin.HandlerFunc {
 			filename := attachment.Filename
 			// Save attachment to file if is greater than 500KB
 			if len(data) > 500000 {
-				err := SaveAttachmentToFile(filename, data)
+				destPath := "attachments/" + filename
+				err := SaveAttachmentToFile(destPath, data)
 				if err != nil {
 					c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 					return
 				}
+				err = store.SaveAttachment(email.ID, "attachment", filename, destPath)
 			} else {
 				err = store.SaveAttachment(email.ID, "attachment", filename, ConvertBytesToBase64(data))
 				if err != nil {

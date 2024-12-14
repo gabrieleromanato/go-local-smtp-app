@@ -51,6 +51,7 @@ func main() {
 	r.Static("/attachments", "./attachments")
 	r.Use(app.CORSMiddleware())
 
+	r.GET("/check-token", app.CheckTokenExpiration)
 	r.POST("/login", app.HandleLogin)
 	r.Use(app.AuthMiddleware())
 
