@@ -2,6 +2,7 @@ package app
 
 import (
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -9,16 +10,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-const (
-	JWT_SECRET = "secret"
-)
-
 func CreateJWT(username string) (string, error) {
+	secret := os.Getenv("JWT_SECRET")
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": username,
 		"exp":      time.Now().Add(time.Hour * 24).Unix(),
 	})
-	tokenString, err := token.SignedString([]byte(JWT_SECRET))
+	tokenString, err := token.SignedString([]byte(secret))
 	if err != nil {
 		return "", err
 	}
@@ -35,10 +33,11 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 		tokenString := tokenHeader[7:]
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+			secret := os.Getenv("JWT_SECRET")
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, http.ErrAbortHandler
 			}
-			return []byte(JWT_SECRET), nil
+			return []byte(secret), nil
 		})
 		if err != nil || !token.Valid {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
@@ -84,7 +83,7 @@ func HandleLogin(c *gin.Context) {
 }
 
 func CheckTokenExpiration(c *gin.Context) {
-	var jwtSecret = []byte(JWT_SECRET)
+	secret := os.Getenv("JWT_SECRET")
 	tokenString := c.GetHeader("Authorization")
 	if tokenString == "" || !strings.HasPrefix(tokenString, "Bearer ") {
 		c.JSON(http.StatusOK, gin.H{"error": "Authorization header missing or invalid"})
@@ -97,7 +96,7 @@ func CheckTokenExpiration(c *gin.Context) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, jwt.NewValidationError("unexpected signing method", jwt.ValidationErrorSignatureInvalid)
 		}
-		return jwtSecret, nil
+		return secret, nil
 	})
 
 	if err != nil {

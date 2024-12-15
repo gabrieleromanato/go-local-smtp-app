@@ -30,7 +30,7 @@ func DeleteEmail(store *EmailStore) gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"message": "Email eliminata correttamente"})
+		c.JSON(http.StatusOK, gin.H{"message": "Email successfully deleted"})
 	}
 }
 
@@ -58,7 +58,7 @@ func SendEmail(store *EmailStore) gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"message": "Email inviata correttamente"})
+		c.JSON(http.StatusOK, gin.H{"message": "Email successfully sent"})
 
 	}
 }

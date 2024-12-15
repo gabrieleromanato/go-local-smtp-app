@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/emersion/go-sasl"
@@ -33,55 +34,50 @@ func (s *Session) Rcpt(to string, opts *smtp.RcptOptions) error {
 }
 
 func (s *Session) Data(r io.Reader) error {
-	// Usa enmime per analizzare l'email
+	maxAttachmentSize := os.Getenv("MAX_ATTACHMENT_SIZE")
+	MAX_ATTACHMENT_SIZE, err := strconv.Atoi(maxAttachmentSize)
 	env, err := enmime.ReadEnvelope(r)
 	if err != nil {
-		return fmt.Errorf("errore durante il parsing dell'email: %w", err)
+		return fmt.Errorf("Error while parsing email: %w", err)
 	}
 
-	// Estrai i dati
-	subject := env.GetHeader("Subject") // Ottieni il Subject dall'intestazione
-	body := env.Text                    // Corpo in formato testo semplice
+	subject := env.GetHeader("Subject")
+	body := env.Text
 	if body == "" {
-		body = env.HTML // Se il testo semplice è vuoto, prova il corpo HTML
+		body = env.HTML
 	}
 
-	// Salva l'email nel database
 	emailId, err := s.store.SaveEmail(s.from, s.to, subject, body)
 	if err != nil {
-		return fmt.Errorf("errore durante il salvataggio dell'email: %w", err)
+		return fmt.Errorf("Error while saving the email: %w", err)
 	}
 
-	// Salva il contenuto dell'allegato
 	for _, att := range env.Attachments {
 		strContent := ConvertBytesToBase64(att.Content)
 		if len(att.Content) > MAX_ATTACHMENT_SIZE {
-			// Salva su file
 			filename := fmt.Sprintf("attachments/%d_%s", emailId, att.FileName)
 			err := SaveAttachmentToFile(filename, att.Content)
 			if err != nil {
-				return fmt.Errorf("errore durante il salvataggio dell'allegato: %w", err)
+				return fmt.Errorf("Error while saving the attachment: %w", err)
 			}
 			strContent = filename
 		}
 		err := s.store.SaveAttachment(emailId, att.ContentType, att.FileName, strContent)
 		if err != nil {
-			return fmt.Errorf("errore durante il salvataggio dell'allegato: %w", err)
+			return fmt.Errorf("Error while saving the attachment: %w", err)
 		}
 	}
 
-	log.Printf("Email salvata nel database: From=%s, To=%v, Subject=%s, Body=%s", s.from, s.to, subject, body)
+	log.Printf("Email saved: From=%s, To=%v, Subject=%s, Body=%s", s.from, s.to, subject, body)
 	return nil
 }
 
-// Reset resetta la sessione
 func (s *Session) Reset() {
 	s.from = ""
 	s.to = nil
 	s.buffer.Reset()
 }
 
-// Logout termina la sessione
 func (s *Session) Logout() error {
 	return nil
 }
@@ -101,7 +97,7 @@ func (s *Session) Auth(mech string) (sasl.Server, error) {
 			}
 		}
 		if !found {
-			return errors.New("Autenticazione fallita")
+			return errors.New("Authentication failed")
 		}
 		return nil
 	}), nil
@@ -110,11 +106,11 @@ func (s *Session) Auth(mech string) (sasl.Server, error) {
 func getUsernameAndPasswordFromFile() []User {
 	data, err := os.ReadFile("authfile")
 	if err != nil {
-		log.Fatalf("Errore nella lettura del file: %v", err)
+		log.Fatalf("Errore while reading the authfile: %v", err)
 	}
 	lines := strings.Split(string(data), "\n")
 	if len(lines) < 1 {
-		log.Fatalf("File non valido")
+		log.Fatalf("Invalid authfile")
 	}
 	output := make([]User, 0)
 	for _, line := range lines {

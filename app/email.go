@@ -2,15 +2,12 @@ package app
 
 import (
 	"database/sql"
+	"os"
+	"strconv"
 	"strings"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
-)
-
-const (
-	EMAILS_PER_PAGE     = 10
-	MAX_ATTACHMENT_SIZE = 500000 // 500 KB
 )
 
 type Attachment struct {
@@ -47,7 +44,6 @@ func NewEmailStore(dbPath string) (*EmailStore, error) {
 		return nil, err
 	}
 
-	// Creazione della tabella emails se non esiste
 	query := `
 	CREATE TABLE IF NOT EXISTS emails (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -61,8 +57,6 @@ func NewEmailStore(dbPath string) (*EmailStore, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	// Creazione della tabella attachments se non esiste
 
 	queryAttachments := `
 	CREATE TABLE IF NOT EXISTS attachments (
@@ -83,7 +77,7 @@ func NewEmailStore(dbPath string) (*EmailStore, error) {
 }
 
 func (store *EmailStore) SaveEmail(from string, to []string, subject, body string) (int, error) {
-	toString := strings.Join(to, ", ") // Concatena tutti i destinatari in una stringa
+	toString := strings.Join(to, ", ")
 	timeFormat := "2006-01-02 15:04:05"
 	sentAt := time.Now().Format(timeFormat)
 	query := `INSERT INTO emails (from_email, to_email, subject, body, sent_at) VALUES (?, ?, ?, ?, ?)`
@@ -128,15 +122,20 @@ func (store *EmailStore) GetEmailAttachments(id int) ([]Attachment, error) {
 }
 
 func (store *EmailStore) ListEmails(page int) (EmailResponse, error) {
-	offset := (page - 1) * EMAILS_PER_PAGE
+	emailsPerPage := os.Getenv("EMAILS_PER_PAGE")
+	if emailsPerPage == "" {
+		emailsPerPage = "10"
+	}
+	perPage, _ := strconv.Atoi(emailsPerPage)
+	offset := (page - 1) * perPage
 	total := 0
 	err := store.Db.QueryRow("SELECT COUNT(*) FROM emails").Scan(&total)
 	if err != nil {
 		return EmailResponse{}, err
 	}
-	pages := total / EMAILS_PER_PAGE
+	pages := total / perPage
 	query := "SELECT * FROM emails ORDER BY sent_at DESC LIMIT ? OFFSET ?"
-	rows, err := store.Db.Query(query, EMAILS_PER_PAGE, offset)
+	rows, err := store.Db.Query(query, perPage, offset)
 	if err != nil {
 		return EmailResponse{}, err
 	}

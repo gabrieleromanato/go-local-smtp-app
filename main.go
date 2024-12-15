@@ -13,39 +13,38 @@ import (
 )
 
 func main() {
-	store, err := app.NewEmailStore("emails.db")
+
+	errEnv := godotenv.Load(".env")
+
+	if errEnv != nil {
+		log.Fatalf("Error while loading the .env file: %v", errEnv)
+	}
+	dbName := os.Getenv("DB_NAME")
+	store, err := app.NewEmailStore(dbName)
 	if err != nil {
-		log.Fatalf("Errore durante l'inizializzazione del database: %v", err)
+		log.Fatalf("Error while creating the database: %v", err)
 	}
 	defer store.Db.Close()
-
-	err = godotenv.Load(".env")
-
-	if err != nil {
-		log.Fatalf("Errore durante il caricamento del file .env: %v", err)
-	}
 
 	go func() {
 		backend := &app.Backend{Store: store}
 		maxMessageSize, _ := strconv.Atoi(os.Getenv("MAX_MESSAGE_SIZE"))
 
-		// Configura il server SMTP
 		server := smtp.NewServer(backend)
-		server.Addr = ":" + os.Getenv("SMTP_SERVER_PORT") // Porta locale
+		server.Addr = ":" + os.Getenv("SMTP_SERVER_PORT")
 		server.Domain = os.Getenv("SMTP_SERVER_HOST")
 		server.MaxMessageBytes = int64(maxMessageSize)
 		server.AllowInsecureAuth = true
 
-		// Avvia il server
 		listener, err := net.Listen("tcp", server.Addr)
 		if err != nil {
-			log.Fatalf("Errore nell'avviare il server: %v", err)
+			log.Fatalf("Error while starting the SMTP server: %v", err)
 		}
 		defer listener.Close()
 
-		log.Printf("Server SMTP in ascolto su %s", server.Addr)
+		log.Printf("SMTP server listening at %s", server.Addr)
 		if err := server.Serve(listener); err != nil {
-			log.Fatalf("Errore nel server SMTP: %v", err)
+			log.Fatalf("Error in the SMTP server: %v", err)
 		}
 	}()
 
@@ -66,7 +65,7 @@ func main() {
 	}
 	webServerPort := ":" + os.Getenv("WEB_SERVER_PORT")
 	if err := r.Run(webServerPort); err != nil {
-		log.Fatalf("Errore durante l'avvio del server: %v", err)
+		log.Fatalf("Error while starting the web server: %v", err)
 	}
 
 }
