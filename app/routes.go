@@ -46,7 +46,14 @@ func SendEmail(store *EmailStore) gin.HandlerFunc {
 			Body:    form.Value["message"][0],
 		}
 		attachments := form.File["attachments"]
-		err := SendEmailViaSMTP(email, attachments)
+		// Save attachments to disk temporarily
+		files := []string{}
+		for _, attachment := range attachments {
+			c.SaveUploadedFile(attachment, attachment.Filename)
+			files = append(files, attachment.Filename)
+		}
+
+		err := SendEmailViaSMTP(email, files)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
