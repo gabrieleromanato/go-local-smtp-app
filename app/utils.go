@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"gopkg.in/gomail.v2"
 )
@@ -16,14 +17,21 @@ func FormatDateToMySQL(date string) string {
 }
 
 func FormatMySQLDateToLocale(date string) string {
-	parts := strings.Split(date, " ")
-	datePart := parts[0]
-	timePart := parts[1]
-	dateParts := strings.Split(datePart, "-")
-	year := dateParts[0]
-	month := dateParts[1]
-	day := dateParts[2]
-	return fmt.Sprintf("%s/%s/%s %s", day, month, year, timePart)
+	dateObj, _ := time.Parse("2006-01-02 15:04:05", date)
+	displayFormat := os.Getenv("DISPLAY_DATE_FORMAT")
+	if displayFormat == "" {
+		displayFormat = "dd/mm/yyyy HH:MM:SS"
+	}
+	// Replaces quotes in .env varibale if any
+	displayFormat = strings.ReplaceAll(displayFormat, "\"", "")
+	// Replaces date format with Go date format
+	displayFormat = strings.ReplaceAll(displayFormat, "dd", "02")
+	displayFormat = strings.ReplaceAll(displayFormat, "mm", "01")
+	displayFormat = strings.ReplaceAll(displayFormat, "yyyy", "2006")
+	displayFormat = strings.ReplaceAll(displayFormat, "HH", "15")
+	displayFormat = strings.ReplaceAll(displayFormat, "MM", "04")
+	displayFormat = strings.ReplaceAll(displayFormat, "SS", "05")
+	return dateObj.Format(displayFormat)
 }
 
 func Md5String(str string) string {
