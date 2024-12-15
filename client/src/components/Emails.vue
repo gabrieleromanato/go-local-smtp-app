@@ -13,25 +13,27 @@ const handleDelete = (email) => {
 </script>
 
 <template>
-  <div class="emails">
-    <header>
-        <div>Subject</div>
-        <div>Date</div>
-        <div>From</div>
-        <div>To</div>
-    </header>
-      <ul class="emails-list">
-        <li v-for="email in emails" :key="email.id" class="email">
-          <div class="email-header" @click="handleSelect(email)">
-            <h4 class="email-title">{{ email.subject }}</h4>
-            <p class="email-date">{{ email.sent_at }}</p>
-            <p class="email-from">{{ email.from }}</p>
-            <p class="email-to">{{ email.to[0] }}</p>
-            
-          </div>
-          <button @click="handleDelete(email)" class="button delete">Delete</button>
-        </li>
-        </ul>
-    </div>
+  <table class="emails">
+    <thead>
+      <tr>
+        <th>Subject</th>
+        <th>Date</th>
+        <th>From</th>
+        <th colspan="2">To</th>
+      </tr>
+    </thead>
+      <tbody>
+        <tr v-for="email in emails" :key="email.id">
+          <td>{{ email.subject }}</td>
+          <td>{{ email.sent_at }}</td>
+          <td>{{ email.from }}</td>
+          <td>{{ email.to[0] }}</td>
+          <td>
+            <button @click="handleSelect(email)" class="button select">View</button>
+            <button @click="handleDelete(email)" class="button delete">Delete</button>
+          </td>
+        </tr>
+        </tbody>
+    </table>
 </template>
         

@@ -67,8 +67,10 @@ watch(() => props.active, (newVal) => {
 </script>
 
 <template>
-    <aside class="email-details" :class="{'active': active}">
-        <button @click="$emit('close')" class="email-details__close">Close</button>
+  <div class="email-details-wrapper" :class="{'active': active}">
+    <button @click="$emit('close')" class="email-details__close">&times;</button>  
+    <aside class="email-details">
+        
         <div class="email-details__header">
             <h2 class="email-details__title">{{ email.subject }}</h2>
             <p  class="email-details__date">{{ email.sent_at }}</p>
@@ -84,4 +86,5 @@ watch(() => props.active, (newVal) => {
             </ul>
         </div>
     </aside>
+    </div>
 </template>

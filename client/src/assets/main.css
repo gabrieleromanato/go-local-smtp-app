@@ -61,36 +61,33 @@ textarea.form-control {
   background-color: #fff;
 }
 
-.emails header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  padding: 1rem 0 1rem 2rem;
-  border-bottom: 1px solid #ccc;
+table.emails {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #ccc;
 }
 
-.emails header div {
-  width: 25%;
-  font-size: 1.2rem;
+table.emails th,
+table.emails td {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+}
+
+table.emails td {
+  text-align: left;
+}
+
+table.emails th {
+  background-color: #f4f4f4;
+  text-align: left;
+}
+
+table.emails td button {
+  padding: 0;
+  margin: 0 0.4rem;
+  border: none;
+  background-color: transparent;
   font-weight: bold;
-}
-
-.emails-list li {
-  padding: 1rem;
-  border-bottom: 1px solid #ccc;
-  margin-bottom: 1rem;
-  cursor: pointer;
-}
-
-.email-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.email-header [class^='email-'] {
-  width: 25%;
-  padding-left: 1rem;
 }
 
 .pagination {
@@ -104,21 +101,30 @@ textarea.form-control {
   margin: 0 0.5rem;
 }
 
-.email-details {
+.email-details-wrapper {
   position: fixed;
   top: 0;
-  right: 0;
-  width: 25%;
+  left: 0;
+  width: 100%;
   min-height: 100vh;
-  background-color: #fff;
-  border-left: 1px solid #ccc;
-  padding: 1rem;
-  transition: all 0.3s;
-  transform: translate(100%, 0);
+  background-color: rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 999;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
-.email-details.active {
-  transform: translate(0, 0);
+.email-details {
+  width: 40%;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.20rem;
+  background-color: #fff;
+}
+
+.email-details-wrapper.active {
+  display: flex;
 }
 
 .email-details__attachments {
@@ -158,20 +164,20 @@ textarea.form-control {
 
 .email-details__close {
   cursor: pointer;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 0.20rem;
-  background-color: #f4f4f4;
-  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
 }
 
 .delete {
-  background-color: #c00;
-  color: #fff;
-  border: 1px solid #c00;
-  margin-top: 1rem;
-  margin-left: 1rem;
+ color: #d00;
 }
 
 .email-form {
@@ -198,7 +204,6 @@ textarea.form-control {
 
 .actions > button:first-child {
   margin-bottom: 1rem;
-  margin-left: 2rem;
 }
 
 .form-control-file::-webkit-file-upload-button {
