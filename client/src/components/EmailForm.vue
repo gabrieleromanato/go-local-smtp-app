@@ -1,10 +1,14 @@
 <script setup>
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faTimes, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import { ref } from 'vue'
 import { sendEmail } from '@/api/emails';
 
 defineProps({
     visible: Boolean
 });
+
+defineEmits(['close']);
 
 const message = ref({
     email: '',
@@ -34,7 +38,11 @@ const handleSubmit = () => {
 </script>
 
 <template>
-    <form @submit.prevent="handleSubmit" class="email-form" :class="{'visible': visible}">
+  <div class="email-form-container" :class="{'visible': visible}"> 
+    <button @click="$emit('close')" class="close-button">
+        <FontAwesomeIcon :icon="faTimes" />
+    </button> 
+    <form @submit.prevent="handleSubmit" class="email-form">
         <div class="form-group">
             <label class="form-label">Email</label>
             <input type="email" class="form-control" v-model="message.email" />
@@ -55,6 +63,9 @@ const handleSubmit = () => {
             <label class="form-label">Attachments</label>
             <input type="file" class="form-control-file" multiple @change="handleFileUpload" />
         </div>
-        <button type="submit" class="button">Send</button>
+        <button type="submit" class="button">
+            <FontAwesomeIcon :icon="faPaperPlane" />
+        </button>
     </form>
+    </div>
 </template>

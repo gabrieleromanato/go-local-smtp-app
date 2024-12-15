@@ -1,4 +1,6 @@
 <script setup>
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faPaperPlane } from '@fortawesome/free-regular-svg-icons';
 import { isAuthenticated } from '@/api/auth';
 import { useRouter } from 'vue-router';
 import { ref, onMounted } from 'vue';
@@ -73,7 +75,6 @@ onMounted(() => {
         data.value.emails = response.emails;
         data.value.pages = response.pages;
         data.value.currentPage = response.page;
-        console.log(data.value.emails);
     });
 });
 </script>
@@ -82,8 +83,10 @@ onMounted(() => {
   <div class="home-view">
     <section class="container">
         <div class="actions">
-            <button class="button" @click="emailFormVisible = !emailFormVisible">Send test email</button>
-            <EmailForm :visible="emailFormVisible" />
+            <button class="button" @click="emailFormVisible = !emailFormVisible">
+                <FontAwesomeIcon :icon="faPaperPlane" />
+            </button>
+            <EmailForm @close="emailFormVisible = !emailFormVisible" :visible="emailFormVisible" />
         </div>
         <Emails @delete="handleDelete" @select="handleSelect" :emails="data.emails" v-if="data.emails.length > 0" />
         <Pagination :pages="data.pages" :currentPage="data.currentPage" @next="handleNext" @previous="handlePrevious" />

@@ -1,4 +1,8 @@
 <script setup>
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import { faEye } from '@fortawesome/free-regular-svg-icons';
+
 defineProps(['emails']);
 
 const emits = defineEmits(['select', 'delete']);
@@ -29,8 +33,12 @@ const handleDelete = (email) => {
           <td>{{ email.from }}</td>
           <td>{{ email.to[0] }}</td>
           <td>
-            <button @click="handleSelect(email)" class="button select">View</button>
-            <button @click="handleDelete(email)" class="button delete">Delete</button>
+            <button @click="handleSelect(email)" class="button select">
+              <FontAwesomeIcon :icon="faEye" />
+            </button>
+            <button @click="handleDelete(email)" class="button delete">
+              <FontAwesomeIcon :icon="faTrashAlt" />
+            </button>
           </td>
         </tr>
         </tbody>

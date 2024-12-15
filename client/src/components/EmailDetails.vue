@@ -1,4 +1,6 @@
 <script setup>
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { ref, watch } from 'vue';
 
 const props = defineProps({
@@ -68,7 +70,9 @@ watch(() => props.active, (newVal) => {
 
 <template>
   <div class="email-details-wrapper" :class="{'active': active}">
-    <button @click="$emit('close')" class="email-details__close">&times;</button>  
+    <button @click="$emit('close')" class="email-details__close">
+        <FontAwesomeIcon :icon="faTimes" />
+    </button>  
     <aside class="email-details">
         
         <div class="email-details__header">

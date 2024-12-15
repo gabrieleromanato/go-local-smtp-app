@@ -1,4 +1,6 @@
 <script setup>
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 const props = defineProps(['pages', 'currentPage']);
 
 const emits = defineEmits(['next', 'previous']);
@@ -16,7 +18,11 @@ const previousPage = () => {
 
 <template>
     <div class="pagination">
-        <button @click="previousPage" class="button" :disabled="currentPage === 1">Previous</button>
-        <button @click="nextPage" class="button" :disabled="currentPage === pages">Next</button>
+        <button @click="previousPage" class="button" :disabled="currentPage === 1">
+            <FontAwesomeIcon :icon="faArrowLeft" />
+        </button>
+        <button @click="nextPage" class="button" :disabled="currentPage === pages">
+            <FontAwesomeIcon :icon="faArrowRight" />
+        </button>
     </div>
 </template>
