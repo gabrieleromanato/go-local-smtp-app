@@ -1,0 +1,16 @@
+services:
+  smtp_server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${SMTP_SERVER_PORT}:${SMTP_SERVER_PORT}"
+      - "${WEB_SERVER_PORT}:${WEB_SERVER_PORT}"
+    volumes:
+      - ./attachments:/smtp-server/attachments
+  client_app:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
