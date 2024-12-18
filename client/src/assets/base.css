@@ -36,3 +36,9 @@ button {
   border: none;
   padding: 0;
 }
+
+.wrapper {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}

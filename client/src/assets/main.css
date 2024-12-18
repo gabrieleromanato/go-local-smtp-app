@@ -53,6 +53,32 @@ textarea.form-control {
   width: 100%;
 }
 
+.navigation {
+  padding: 1rem;
+  background-color: #333;
+  color: #fff;
+}
+
+.navigation ul {
+  display: flex;
+  list-style: none;
+  align-items: center;
+  justify-content: flex-end
+}
+
+.navigation ul li {
+  margin-right: 1rem;
+}
+
+.navigation ul li a,
+.navigation ul li button {
+  color: #fff;
+  text-decoration: none;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
 .container {
   width: 100%;
   max-width: 1200px;

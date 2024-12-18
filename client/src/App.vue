@@ -1,6 +1,7 @@
 <script setup>
 import { RouterView } from 'vue-router'
-import { checkToken  } from './api/auth';
+import { checkToken, isAuthenticated  } from './api/auth';
+import Navigation from './components/Navigation.vue';
 
 const checkTokenValidity = () => {
   const token = localStorage.getItem('app-token');
@@ -22,7 +23,8 @@ checkTokenValidity();
 </script>
 
 <template>
- <main class="app"> 
+ <main class="app">
+  <Navigation v-if="isAuthenticated()"/> 
   <RouterView />
   </main>
 </template>
