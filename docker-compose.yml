@@ -13,4 +13,14 @@ services:
       context: ./client
       dockerfile: Dockerfile
     ports:
-      - "3000:3000"
+      - "3000:80"
+  web_server:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+     - ./client/config/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - client_app 
