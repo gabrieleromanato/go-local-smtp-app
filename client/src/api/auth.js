@@ -22,7 +22,7 @@ export function getToken() {
 }
 
 export function isAuthenticated() {
-    return !!getToken();
+    return getToken() !== null;
 }
 
 export async function checkToken() {
