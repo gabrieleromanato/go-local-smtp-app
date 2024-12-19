@@ -23,6 +23,11 @@ document.title = 'Emails | Login';
 <template>
   <div class="login-view">  
     <form class="login-form" @submit.prevent="handleSubmit">
+        <div class="login-logo">
+            <div class="logo">
+                <span class="visually-hidden">Emails</span>
+            </div>
+        </div>
         <div class="form-group">
             <label class="form-label">Email</label>
             <input v-model="userData.email" type="email" class="form-control" />  

@@ -96,6 +96,12 @@ textarea.form-control {
   text-decoration: none;
 }
 
+.login-logo {
+ margin-bottom: 1rem;
+ display: flex;
+  justify-content: center;
+}
+
 .container {
   width: 100%;
   max-width: 1200px;
