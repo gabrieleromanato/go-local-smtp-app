@@ -15,9 +15,10 @@ textarea.form-control {
 .button {
   padding: 0.5rem 1rem;
   font-size: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid #ffd300;
   border-radius: 0.20rem;
-  background-color: #f4f4f4;
+  background-color: #ffd300;
+  color: #000;
   cursor: pointer;
 }
 
@@ -222,7 +223,8 @@ table.emails td button {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #fff;
+  background-color: #ffd300;
+  color: #000;
 }
 
 .delete {
@@ -270,7 +272,7 @@ table.emails td button {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #fff;
+  background-color: #ffd300;
 }
 
 .actions {
@@ -291,8 +293,8 @@ table.emails td button {
   display: inline-block;
   padding: 0.5rem 1rem;
   font-size: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid #ffd300;
   border-radius: 0.20rem;
-  background-color: #f4f4f4;
+  background-color: #ffd300;
   cursor: pointer;
 }
