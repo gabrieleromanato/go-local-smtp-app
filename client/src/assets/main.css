@@ -75,6 +75,13 @@ textarea.form-control {
   background-color: transparent;
   border: none;
   cursor: pointer;
+  padding-bottom: 2px;
+  border-bottom: 2px solid transparent;
+}
+
+.navigation ul li a:hover,
+.navigation ul li button:hover {
+  border-bottom: 2px solid #ffd300;
 }
 
 .navigation .wrapper {
