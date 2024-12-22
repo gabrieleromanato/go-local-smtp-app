@@ -63,7 +63,7 @@ func main() {
 		api.DELETE("/emails/:id", app.DeleteEmail(store))
 		api.POST("/emails", app.SendEmail(store))
 	}
-	webServerPort := ":" + os.Getenv("WEB_SERVER_PORT")
+	webServerPort := "0.0.0.0:" + os.Getenv("WEB_SERVER_PORT")
 	if err := r.Run(webServerPort); err != nil {
 		log.Fatalf("Error while starting the web server: %v", err)
 	}
