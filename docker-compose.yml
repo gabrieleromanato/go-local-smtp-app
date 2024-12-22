@@ -14,14 +14,4 @@ services:
       context: ./client
       dockerfile: Dockerfile
     ports:
-      - "${CLIENT_APP_PORT}:${PROXY_SERVER_PORT}"
-  web_server:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    ports:
-      - "${PROXY_SERVER_PORT}:${PROXY_SERVER_PORT}"
-    volumes:
-     - ./client/config/default.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - client_app 
+      - "${CLIENT_APP_PORT}:${CLIENT_APP_PORT}"

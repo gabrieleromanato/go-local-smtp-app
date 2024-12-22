@@ -1,4 +1,4 @@
-FROM node:lts-alpine AS build
+FROM node:lts-alpine
 
 WORKDIR /app
 
@@ -10,15 +10,11 @@ COPY jsconfig.json ./
 COPY vite.config.js ./
 COPY .env ./
 
+RUN npm install http-server -g
+
 RUN npm install
 RUN npm run build
 
-FROM nginx:stable-alpine
+EXPOSE 3000
 
-COPY --from=build /app/dist /usr/share/nginx/html
-
-COPY ./config/default.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD [ "http-server", "dist", "-p", "3000" ]
