@@ -305,3 +305,12 @@ table.emails td button {
   background-color: #ffd300;
   cursor: pointer;
 }
+
+.no-emails {
+  text-align: center;
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.20rem;
+  background-color: #f4f4f4;
+}

@@ -89,7 +89,10 @@ onMounted(() => {
             <EmailForm @close="emailFormVisible = !emailFormVisible" :visible="emailFormVisible" />
         </div>
         <Emails @delete="handleDelete" @select="handleSelect" :emails="data.emails" v-if="data.emails.length > 0" />
-        <Pagination :pages="data.pages" :currentPage="data.currentPage" @next="handleNext" @previous="handlePrevious" />
+        <Pagination v-if="data.pages > 1" :pages="data.pages" :currentPage="data.currentPage" @next="handleNext" @previous="handlePrevious" />
+        <div v-else class="no-emails">
+            <p>No emails yet.</p>
+        </div>
     </section>
   </div>
   <EmailDetails @close="handleClose" :email="email" :active="active" />
