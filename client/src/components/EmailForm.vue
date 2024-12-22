@@ -8,7 +8,7 @@ defineProps({
     visible: Boolean
 });
 
-defineEmits(['close']);
+const emits = defineEmits(['close', 'send']);
 
 const message = ref({
     email: '',
@@ -32,7 +32,7 @@ const handleSubmit = () => {
             recipient: '',
             attachments: []
         };
-        window.location.reload();
+        emits('send');
     });
 };
 </script>

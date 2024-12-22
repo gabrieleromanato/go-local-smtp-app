@@ -1,17 +1,21 @@
 <script setup>
 import { ref } from 'vue';
 import { login, setToken  } from '@/api/auth';
+import { useRouter } from 'vue-router';
 
 const userData = ref({
     email: '',
     password: ''
 });
 
+const router = useRouter();
+
 const handleSubmit = async () => {
+    
     try {
         const response = await login(userData.value);
         setToken(response.token);
-        window.location.href = '/';
+        router.push('/');
     } catch (error) {
         console.error(error);
     }

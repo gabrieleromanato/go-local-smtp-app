@@ -54,6 +54,15 @@ const handleClose = () => {
     active.value = false;
 };
 
+const handleSend = () => {
+    getEmails().then(response => {
+        data.value.emails = response.emails;
+        data.value.pages = response.pages;
+        data.value.currentPage = response.page;
+        emailFormVisible.value = false;
+    });
+};
+
 const handleDelete = (id) => {
     deleteEmail(id).then(() => {
         getEmails().then(response => {
@@ -86,7 +95,7 @@ onMounted(() => {
             <button class="button" @click="emailFormVisible = !emailFormVisible">
                 <FontAwesomeIcon :icon="faPaperPlane" />
             </button>
-            <EmailForm @close="emailFormVisible = !emailFormVisible" :visible="emailFormVisible" />
+            <EmailForm @send="handleSend" @close="emailFormVisible = !emailFormVisible" :visible="emailFormVisible" />
         </div>
         <Emails @delete="handleDelete" @select="handleSelect" :emails="data.emails" v-if="data.emails.length > 0" />
         <Pagination v-if="data.pages > 1" :pages="data.pages" :currentPage="data.currentPage" @next="handleNext" @previous="handlePrevious" />

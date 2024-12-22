@@ -1,13 +1,15 @@
 <script setup>
 import { ref } from 'vue';
 import { logout, isAuthenticated } from '@/api/auth';
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 
 const isLogged = ref(isAuthenticated());
+const router = useRouter();
 
 const handleLogout = () => {
     logout();
-    window.location.href = '/login';
+    isLogged.value = false;
+    router.push('/login');
 };
 </script>
 
