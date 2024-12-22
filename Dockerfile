@@ -11,6 +11,9 @@ COPY app ./app
 COPY main.go ./
 COPY authfile ./
 COPY .env ./
+COPY docker-build.sh ./
+RUN chmod +x docker-build.sh
+RUN ./docker-build.sh
 
 RUN go build -o go-smtp-server
 
