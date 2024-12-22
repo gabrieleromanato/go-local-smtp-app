@@ -14,13 +14,13 @@ services:
       context: ./client
       dockerfile: Dockerfile
     ports:
-      - "3000:80"
+      - "${CLIENT_APP_PORT}:${PROXY_SERVER_PORT}"
   web_server:
     build:
       context: ./client
       dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - "${PROXY_SERVER_PORT}:${PROXY_SERVER_PORT}"
     volumes:
      - ./client/config/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:

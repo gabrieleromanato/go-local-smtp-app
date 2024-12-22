@@ -8,6 +8,7 @@ COPY public ./public
 COPY index.html ./
 COPY jsconfig.json ./
 COPY vite.config.js ./
+COPY .env ./
 
 RUN npm install
 RUN npm run build
