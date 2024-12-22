@@ -9,6 +9,7 @@ import Emails from '@/components/Emails.vue';
 import Pagination from '@/components/Pagination.vue';
 import EmailDetails from '@/components/EmailDetails.vue';
 import EmailForm from '@/components/EmailForm.vue';
+import APIDetails from '@/components/APIDetails.vue';
 
 const router = useRouter();
 const data = ref({
@@ -28,6 +29,7 @@ const email = ref({
 });
 const active = ref(false);
 const emailFormVisible = ref(false);
+const apiDetailsVisible = ref(false);
 
 const handleNext = (page) => {
     getEmails(page).then(response => {
@@ -102,6 +104,7 @@ onMounted(() => {
         <div v-else class="no-emails">
             <p>No emails yet.</p>
         </div>
+        <APIDetails :visible="apiDetailsVisible" @toggle="apiDetailsVisible = !apiDetailsVisible" />
     </section>
   </div>
   <EmailDetails @close="handleClose" :email="email" :active="active" />

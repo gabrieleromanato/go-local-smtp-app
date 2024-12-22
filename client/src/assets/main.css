@@ -314,3 +314,88 @@ table.emails td button {
   border-radius: 0.20rem;
   background-color: #f4f4f4;
 }
+
+.api-details {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.20rem;
+  background-color: #f4f4f4;
+  display: none;
+}
+
+.api-details.visible {
+  display: block;
+}
+
+.api-details h1 {
+  margin-bottom: 1rem;
+  font-size: 2rem;
+}
+
+.api-details h1 + p {
+  margin-bottom: 1rem;
+}
+
+.api-details h2 {
+  margin-bottom: 1rem;
+}
+
+.api-details ul {
+  list-style: none;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.20rem;
+  background-color: #fff;
+}
+
+.api-details ul li {
+  margin-bottom: 1rem;
+}
+
+.api-details ul li h3 {
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.api-details ul li h3 span {
+  font-size: 1.2rem;
+  font-family: monospace;
+}
+
+.api-details ul li p {
+  margin-bottom: 0.5rem;
+}
+
+.api-details ul li h4 {
+  margin-bottom: 0.5rem;
+}
+
+.api-details ul li pre {
+  display: block;
+  padding: 0.5rem;
+  background-color: #f4f4f4;
+  border-radius: 0.20rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-bottom: 1rem;
+}
+
+.api-details-toggle {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.api-details-toggle__button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ffd300;
+  border-radius: 0.20rem;
+  background-color: #ffd300;
+  color: #000;
+  cursor: pointer;
+}
