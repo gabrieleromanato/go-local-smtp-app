@@ -66,7 +66,7 @@ func HandleLogin(c *gin.Context) {
 		return
 	}
 	for _, user := range users {
-		if user.Email == body.Email && user.Password == Md5String(body.Password) {
+		if user.Email == body.Email && user.Password == HashString(body.Password) {
 			loginValid = true
 			token, err := CreateJWT(user.Email)
 			if err != nil {

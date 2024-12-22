@@ -91,7 +91,7 @@ func (s *Session) Auth(mech string) (sasl.Server, error) {
 	return sasl.NewPlainServer(func(identity, username, password string) error {
 		found := false
 		for _, user := range users {
-			if username == user.Email && Md5String(password) == user.Password {
+			if username == user.Email && HashString(password) == user.Password {
 				found = true
 				break
 			}

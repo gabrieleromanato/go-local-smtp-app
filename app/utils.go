@@ -1,7 +1,7 @@
 package app
 
 import (
-	"crypto/md5"
+	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
 	"os"
@@ -34,8 +34,10 @@ func FormatMySQLDateToLocale(date string) string {
 	return dateObj.Format(displayFormat)
 }
 
-func Md5String(str string) string {
-	return fmt.Sprintf("%x", md5.Sum([]byte(str)))
+func HashString(str string) string {
+	hash := sha256.New()
+	hash.Write([]byte(str))
+	return fmt.Sprintf("%x", hash.Sum(nil))
 }
 
 func ConvertBytesToBase64(data []byte) string {
