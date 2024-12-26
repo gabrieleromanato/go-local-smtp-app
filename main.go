@@ -19,8 +19,8 @@ func main() {
 	if errEnv != nil {
 		log.Fatalf("Error while loading the .env file: %v", errEnv)
 	}
-	dbName := os.Getenv("DB_NAME")
-	store, err := app.NewEmailStore(dbName)
+	dsn := app.GetDSN()
+	store, err := app.NewEmailStore(dsn)
 	if err != nil {
 		log.Fatalf("Error while creating the database: %v", err)
 	}

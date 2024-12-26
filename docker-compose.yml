@@ -1,4 +1,24 @@
 services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_HOST: db
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      TZ: 'Europe/Rome'
+    ports:
+      - "${DOCKER_DB_PORT}:3306"
+    volumes:
+      - ./data:/var/lib/mysql
+    healthcheck:
+      test: "mysql --user=$$MYSQL_USER --password=$$MYSQL_PASSWORD --execute \"SHOW DATABASES;\" || exit 1"
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
   smtp_server:
     build:
       context: .
@@ -9,7 +29,9 @@ services:
       - "${WEB_SERVER_PORT}:${WEB_SERVER_PORT}"
     volumes:
       - ./attachments:/smtp-server/attachments
-      - "./${DB_NAME}:/smtp-server/${DB_NAME}"
+    depends_on:
+      db:
+        condition: service_healthy
   client_app:
     build:
       context: ./client

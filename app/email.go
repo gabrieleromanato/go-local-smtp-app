@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type Attachment struct {
@@ -39,21 +39,21 @@ type EmailResponse struct {
 	Page   int     `json:"page"`
 }
 
-func NewEmailStore(dbPath string) (*EmailStore, error) {
-	db, err := sql.Open("sqlite3", dbPath)
+func NewEmailStore(dsn string) (*EmailStore, error) {
+	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		return nil, err
 	}
 
 	query := `
 	CREATE TABLE IF NOT EXISTS emails (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		from_email TEXT,
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		from_email VARCHAR(255),
 		to_email TEXT,
-		subject TEXT,
+		subject VARCHAR(255),
 		body TEXT,
 		sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-	);`
+	)`
 	_, err = db.Exec(query)
 	if err != nil {
 		return nil, err
@@ -61,15 +61,14 @@ func NewEmailStore(dbPath string) (*EmailStore, error) {
 
 	queryAttachments := `
 	CREATE TABLE IF NOT EXISTS attachments (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		email_id INTEGER,
-		type TEXT,
-		filename TEXT,
-		content TEXT
-	);`
-
+		id INT AUTO_INCREMENT PRIMARY KEY,
+		email_id INT,
+		type VARCHAR(255),
+		filename VARCHAR(255),
+		content TEXT,
+		FOREIGN KEY (email_id) REFERENCES emails(id) ON DELETE CASCADE
+	)`
 	_, err = db.Exec(queryAttachments)
-
 	if err != nil {
 		return nil, err
 	}
@@ -79,14 +78,13 @@ func NewEmailStore(dbPath string) (*EmailStore, error) {
 
 func (store *EmailStore) SaveEmail(from string, to []string, subject, body string) (int, error) {
 	toString := strings.Join(to, ", ")
-	timeFormat := "2006-01-02 15:04:05"
-	sentAt := time.Now().Format(timeFormat)
+	sentAt := time.Now()
 	query := `INSERT INTO emails (from_email, to_email, subject, body, sent_at) VALUES (?, ?, ?, ?, ?)`
-	record, err := store.Db.Exec(query, from, toString, subject, body, sentAt)
+	result, err := store.Db.Exec(query, from, toString, subject, body, sentAt)
 	if err != nil {
 		return 0, err
 	}
-	id, _ := record.LastInsertId()
+	id, _ := result.LastInsertId()
 	return int(id), nil
 }
 
@@ -134,7 +132,8 @@ func (store *EmailStore) ListEmails(page int) (EmailResponse, error) {
 	if err != nil {
 		return EmailResponse{}, err
 	}
-	pages := total / perPage
+	pages := (total + perPage - 1) / perPage
+
 	query := "SELECT * FROM emails ORDER BY sent_at DESC LIMIT ? OFFSET ?"
 	rows, err := store.Db.Query(query, perPage, offset)
 	if err != nil {
@@ -154,7 +153,7 @@ func (store *EmailStore) ListEmails(page int) (EmailResponse, error) {
 			To:          strings.Split(to, ", "),
 			Subject:     subject,
 			Body:        body,
-			SentAt:      FormatMySQLDateToLocale(FormatDateToMySQL(sentAt)),
+			SentAt:      sentAt,
 			Attachments: attachments}
 		emails = append(emails, email)
 	}
@@ -173,7 +172,6 @@ func (store *EmailStore) SearchEmails(query string, page int) (EmailResponse, er
 		page = 1
 	}
 	offset := (page - 1) * perPage
-
 	total := 0
 	err := store.Db.QueryRow("SELECT COUNT(*) FROM emails WHERE subject LIKE ? OR body LIKE ?", "%"+query+"%", "%"+query+"%").Scan(&total)
 	if err != nil {
@@ -204,7 +202,7 @@ func (store *EmailStore) SearchEmails(query string, page int) (EmailResponse, er
 			To:          strings.Split(to, ", "),
 			Subject:     subject,
 			Body:        body,
-			SentAt:      FormatMySQLDateToLocale(FormatDateToMySQL(sentAt)),
+			SentAt:      sentAt,
 			Attachments: attachments}
 		emails = append(emails, email)
 	}

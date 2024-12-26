@@ -12,6 +12,16 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
+func GetDSN() string {
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbName := os.Getenv("DB_NAME")
+
+	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPassword, dbHost, dbPort, dbName)
+}
+
 func FormatDateToMySQL(date string) string {
 	return date[:10] + " " + date[11:19]
 }
