@@ -21,7 +21,7 @@ const handleSubmit = async () => {
     }
 };
 
-document.title = 'Emails | Login';
+document.title = 'Axio SMTP Server | Login';
 </script>
 
 <template>
@@ -40,7 +40,7 @@ document.title = 'Emails | Login';
             <label class="form-label">Password</label>
             <input v-model="userData.password" type="password" class="form-control" />
         </div>
-        <button type="submit" class="button">Login</button>
+        <button type="submit" class="btn">Login</button>
     </form>
     </div>
 </template>

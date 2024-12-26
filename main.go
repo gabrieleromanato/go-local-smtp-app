@@ -60,6 +60,7 @@ func main() {
 	api := r.Group("/api")
 	{
 		api.GET("/emails", app.GetEmails(store))
+		api.GET("/search", app.SearchForEmails(store))
 		api.DELETE("/emails/:id", app.DeleteEmail(store))
 		api.POST("/emails", app.SendEmail(store))
 	}

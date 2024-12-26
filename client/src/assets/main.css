@@ -1,18 +1,10 @@
 @import 'base.css';
 
-.form-control {
-  padding: 0.4rem 0.5rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  display: block;
-  width: 100%;
-}
-
 textarea.form-control {
   height: 10rem;
 }
 
-.button {
+.btn {
   padding: 0.5rem 1rem;
   font-size: 1rem;
   border: 1px solid #ffd300;
@@ -24,11 +16,6 @@ textarea.form-control {
 
 .form-group {
   margin-bottom: 1rem;
-}
-
-.form-label {
-  display: block;
-  margin-bottom: 0.5rem;
 }
 
 .login-form {
@@ -84,12 +71,6 @@ textarea.form-control {
   border-bottom: 2px solid #ffd300;
 }
 
-.navigation .wrapper {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .logo {
   width: 80px;
   height: 60px;
@@ -111,9 +92,8 @@ textarea.form-control {
 }
 
 .container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 3.5rem auto;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
   padding: 1rem;
   background-color: #fff;
 }
@@ -121,22 +101,13 @@ textarea.form-control {
 table.emails {
   width: 100%;
   border-collapse: collapse;
-  border: 1px solid #ccc;
-}
-
-table.emails th,
-table.emails td {
-  border: 1px solid #ccc;
-  padding: 0.5rem;
+  table-layout: fixed;
 }
 
 table.emails td {
-  text-align: left;
-}
-
-table.emails th {
-  background-color: #f4f4f4;
-  text-align: left;
+  width: 20%;
+  white-space: pre-wrap;
+  word-break: break-word; 
 }
 
 table.emails td button {
@@ -295,6 +266,10 @@ table.emails td button {
   visibility: hidden;
 }
 
+.form-label {
+  display: block;
+}
+
 .form-control-file::before {
   content: 'Select files';
   display: inline-block;
@@ -304,6 +279,7 @@ table.emails td button {
   border-radius: 0.20rem;
   background-color: #ffd300;
   cursor: pointer;
+  margin-top: 0.7rem;
 }
 
 .no-emails {

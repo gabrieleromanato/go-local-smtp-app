@@ -3,14 +3,17 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    restart: always
     ports:
       - "${SMTP_SERVER_PORT}:${SMTP_SERVER_PORT}"
       - "${WEB_SERVER_PORT}:${WEB_SERVER_PORT}"
     volumes:
       - ./attachments:/smtp-server/attachments
+      - "./${DB_NAME}:/smtp-server/${DB_NAME}"
   client_app:
     build:
       context: ./client
       dockerfile: Dockerfile
+    restart: always
     ports:
       - "${CLIENT_APP_PORT}:${CLIENT_APP_PORT}"

@@ -21,6 +21,20 @@ func GetEmails(store *EmailStore) gin.HandlerFunc {
 	}
 }
 
+func SearchForEmails(store *EmailStore) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		query := c.Query("query")
+		page := c.DefaultQuery("page", "1")
+		pageInt, _ := strconv.Atoi(page)
+		emails, err := store.SearchEmails(query, pageInt)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, emails)
+	}
+}
+
 func DeleteEmail(store *EmailStore) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")

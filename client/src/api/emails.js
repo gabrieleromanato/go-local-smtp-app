@@ -36,3 +36,12 @@ export async function sendEmail(email) {
         throw error.response.data;
     }
 }
+
+export async function searchEmails(query = '', page = 1) {
+    try {
+        const response = await api.get(`/api/search?query=${query}&page=${page}`);
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+}

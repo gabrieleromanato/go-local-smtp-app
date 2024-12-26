@@ -2,6 +2,7 @@ package app
 
 import (
 	"database/sql"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -146,6 +147,56 @@ func (store *EmailStore) ListEmails(page int) (EmailResponse, error) {
 		var from, to, subject, body, sentAt string
 		var id int
 		rows.Scan(&id, &from, &to, &subject, &body, &sentAt)
+		attachments, _ := store.GetEmailAttachments(id)
+		email := Email{
+			ID:          id,
+			From:        from,
+			To:          strings.Split(to, ", "),
+			Subject:     subject,
+			Body:        body,
+			SentAt:      FormatMySQLDateToLocale(FormatDateToMySQL(sentAt)),
+			Attachments: attachments}
+		emails = append(emails, email)
+	}
+
+	resp := EmailResponse{Emails: emails, Pages: pages, Page: page}
+	return resp, nil
+}
+
+func (store *EmailStore) SearchEmails(query string, page int) (EmailResponse, error) {
+	emailsPerPage := os.Getenv("EMAILS_PER_PAGE")
+	if emailsPerPage == "" {
+		emailsPerPage = "10"
+	}
+	perPage, _ := strconv.Atoi(emailsPerPage)
+	if page < 1 {
+		page = 1
+	}
+	offset := (page - 1) * perPage
+
+	total := 0
+	err := store.Db.QueryRow("SELECT COUNT(*) FROM emails WHERE subject LIKE ? OR body LIKE ?", "%"+query+"%", "%"+query+"%").Scan(&total)
+	if err != nil {
+		return EmailResponse{}, err
+	}
+
+	pages := (total + perPage - 1) / perPage
+
+	sqlQuery := "SELECT * FROM emails WHERE subject LIKE ? OR body LIKE ? ORDER BY sent_at DESC LIMIT ? OFFSET ?"
+	rows, err := store.Db.Query(sqlQuery, "%"+query+"%", "%"+query+"%", perPage, offset)
+	if err != nil {
+		return EmailResponse{}, err
+	}
+	defer rows.Close()
+
+	emails := []Email{}
+	for rows.Next() {
+		var from, to, subject, body, sentAt string
+		var id int
+		if err := rows.Scan(&id, &from, &to, &subject, &body, &sentAt); err != nil {
+			log.Println("Error scanning row:", err)
+			continue
+		}
 		attachments, _ := store.GetEmailAttachments(id)
 		email := Email{
 			ID:          id,
