@@ -24,6 +24,8 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: always
+    environment:
+     TZ: 'Europe/Rome'
     ports:
       - "${SMTP_SERVER_PORT}:${SMTP_SERVER_PORT}"
       - "${WEB_SERVER_PORT}:${WEB_SERVER_PORT}"

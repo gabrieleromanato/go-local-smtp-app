@@ -9,7 +9,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -114,9 +113,8 @@ func NewEmailStore(dsn string) (*EmailStore, error) {
 
 func (store *EmailStore) SaveEmail(from string, to []string, subject, body string) (int, error) {
 	toString := strings.Join(to, ", ")
-	sentAt := time.Now()
-	query := `INSERT INTO emails (from_email, to_email, subject, body, sent_at) VALUES (?, ?, ?, ?, ?)`
-	result, err := store.Db.Exec(query, from, toString, subject, body, sentAt)
+	query := `INSERT INTO emails (from_email, to_email, subject, body) VALUES (?, ?, ?, ?)`
+	result, err := store.Db.Exec(query, from, toString, subject, body)
 	if err != nil {
 		return 0, err
 	}
