@@ -2,8 +2,11 @@ package app
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
+	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -39,36 +42,69 @@ type EmailResponse struct {
 	Page   int     `json:"page"`
 }
 
+func applyMigrations(db *sql.DB, migrationsDir string) error {
+	entries, err := os.ReadDir(migrationsDir)
+	if err != nil {
+		return fmt.Errorf("failed to read migrations directory: %w", err)
+	}
+
+	var migrationFiles []string
+	for _, entry := range entries {
+		if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".sql") {
+			migrationFiles = append(migrationFiles, entry.Name())
+		}
+	}
+
+	sort.Strings(migrationFiles)
+
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS migrations (
+			id INT AUTO_INCREMENT PRIMARY KEY,
+			migration_name VARCHAR(255) UNIQUE,
+			run_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+		)`)
+	if err != nil {
+		return fmt.Errorf("failed to create migrations table: %w", err)
+	}
+
+	for _, fileName := range migrationFiles {
+		migrationPath := filepath.Join(migrationsDir, fileName)
+
+		var count int
+		query := "SELECT COUNT(*) FROM migrations WHERE migration_name = ?"
+		if err := db.QueryRow(query, fileName).Scan(&count); err != nil {
+			return fmt.Errorf("failed to check migration status: %w", err)
+		}
+		if count > 0 {
+			continue
+		}
+
+		migrationContent, err := os.ReadFile(migrationPath)
+		if err != nil {
+			return fmt.Errorf("failed to read migration file %s: %w", fileName, err)
+		}
+
+		_, err = db.Exec(string(migrationContent))
+		if err != nil {
+			return fmt.Errorf("failed to execute migration %s: %w", fileName, err)
+		}
+
+		_, err = db.Exec("INSERT INTO migrations (migration_name) VALUES (?)", fileName)
+		if err != nil {
+			return fmt.Errorf("failed to record migration %s: %w", fileName, err)
+		}
+	}
+
+	return nil
+}
+
 func NewEmailStore(dsn string) (*EmailStore, error) {
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
 		return nil, err
 	}
 
-	query := `
-	CREATE TABLE IF NOT EXISTS emails (
-		id INT AUTO_INCREMENT PRIMARY KEY,
-		from_email VARCHAR(255),
-		to_email TEXT,
-		subject VARCHAR(255),
-		body TEXT,
-		sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-	)`
-	_, err = db.Exec(query)
-	if err != nil {
-		return nil, err
-	}
-
-	queryAttachments := `
-	CREATE TABLE IF NOT EXISTS attachments (
-		id INT AUTO_INCREMENT PRIMARY KEY,
-		email_id INT,
-		type VARCHAR(255),
-		filename VARCHAR(255),
-		content TEXT,
-		FOREIGN KEY (email_id) REFERENCES emails(id) ON DELETE CASCADE
-	)`
-	_, err = db.Exec(queryAttachments)
+	err = applyMigrations(db, "./migrations")
 	if err != nil {
 		return nil, err
 	}

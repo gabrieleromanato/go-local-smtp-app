@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS emails (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    from_email VARCHAR(255),
+    to_email TEXT,
+    subject VARCHAR(255),
+    body TEXT,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
