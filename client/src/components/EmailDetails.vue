@@ -1,6 +1,6 @@
 <script setup>
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faTimes, faFile } from '@fortawesome/free-solid-svg-icons';
 import { ref, watch } from 'vue';
 
 const props = defineProps({
@@ -12,6 +12,25 @@ defineEmits(['close']);
 
 const attachments = ref([]);
 const BASE_URL = import.meta.env.VITE_ASSETS_URL;
+const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+const videoExtensions = ['mp4', 'webm', 'ogg'];
+const audioExtensions = ['mp3', 'wav', 'ogg'];
+const documentExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
+
+const getFileType = (filename) => {
+    const extension = filename.split('.').pop();
+    if (imageExtensions.includes(extension)) {
+        return 'image';
+    } else if (videoExtensions.includes(extension)) {
+        return 'video';
+    } else if (audioExtensions.includes(extension)) {
+        return 'audio';
+    } else if (documentExtensions.includes(extension)) {
+        return 'document';
+    } else {
+        return '';
+    }
+};
 
 watch(() => props.active, (newVal) => {
     if (newVal) {
@@ -19,7 +38,8 @@ watch(() => props.active, (newVal) => {
             const url = `${BASE_URL}/attachments/${attachment.filename}`;
             return {
                 name: attachment.filename,
-                url: url
+                url: url,
+                type: getFileType(attachment.filename)
             };
         });
     }
@@ -43,7 +63,16 @@ watch(() => props.active, (newVal) => {
         <div class="email-details__attachments" v-if="attachments.length > 0">
             <ul>
                 <li v-for="attachment in attachments" :key="attachment.name">
-                    <a :href="attachment.url" target="_blank">{{ attachment.name }}</a>
+                    <a v-if="attachment.type && attachment.type !== 'image'" :href="attachment.url" target="_blank" class="document-attachment">
+                        <FontAwesomeIcon :icon="faFile" />
+                        <div>{{ attachment.name }}</div>
+                    </a>
+                    <figure v-if="attachment.type === 'image'" class="image-attachment">
+                      <a :href="attachment.url" target="_blank">  
+                        <img :src="attachment.url" :alt="attachment.name" class="img-fluid" />
+                        <figcaption>{{ attachment.name }}</figcaption>
+                      </a>
+                    </figure>
                 </li>
             </ul>
         </div>
