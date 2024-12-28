@@ -13,7 +13,6 @@ import (
 )
 
 func main() {
-
 	errEnv := godotenv.Load(".env")
 
 	if errEnv != nil {
@@ -49,7 +48,6 @@ func main() {
 	}()
 
 	r := gin.Default()
-
 	r.Static("/attachments", "./attachments")
 	r.Use(app.CORSMiddleware())
 
@@ -68,5 +66,4 @@ func main() {
 	if err := r.Run(webServerPort); err != nil {
 		log.Fatalf("Error while starting the web server: %v", err)
 	}
-
 }

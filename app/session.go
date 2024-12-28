@@ -55,7 +55,7 @@ func (s *Session) Data(r io.Reader) error {
 	for _, att := range env.Attachments {
 		strContent := ConvertBytesToBase64(att.Content)
 		if len(att.Content) > MAX_ATTACHMENT_SIZE {
-			filename := fmt.Sprintf("attachments/%d_%s", emailId, att.FileName)
+			filename := fmt.Sprintf("attachments/%s", att.FileName)
 			err := SaveAttachmentToFile(filename, att.Content)
 			if err != nil {
 				return fmt.Errorf("Error while saving the attachment: %w", err)
