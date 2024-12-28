@@ -51,13 +51,14 @@ const getTypeFromFileExtension = (extension) => {
 };
 
 const attachments = ref([]);
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 watch(() => props.active, (newVal) => {
     if (newVal) {
         attachments.value = props.email.attachments.map(attachment => {
             const extension = attachment.filename.split('.').pop();
             const type = getTypeFromFileExtension(extension);
-            const url = attachment.content.includes('attachments') ? `https://localhost:8080/attachments/${attachment.filename}` : `data:${type};base64,${attachment.content}`;
+            const url = attachment.content.includes('attachments') ? `${BASE_URL}/attachments/${attachment.filename}` : `data:${type};base64,${attachment.content}`;
             return {
                 name: attachment.filename,
                 type: type,
