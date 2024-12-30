@@ -15,7 +15,7 @@ const handleLogout = () => {
 
 <template>
   <nav class="navigation">
-    <div class="container d-flex justify-content-between align-items-center">
+    <div class="xl:container mx-auto flex justify-between items-center">
       <div class="logo">
         <RouterLink to="/">
           <span class="visually-hidden">Emails</span>

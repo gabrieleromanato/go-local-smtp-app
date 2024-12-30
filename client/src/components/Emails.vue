@@ -17,22 +17,22 @@ const handleDelete = (email) => {
 </script>
 
 <template>
-  <table class="emails table table-striped">
+  <table class="emails table-fixed border-collapse border border-slate-500">
     <thead>
       <tr>
-        <th>Subject</th>
-        <th>Date</th>
-        <th>From</th>
-        <th colspan="2">To</th>
+        <th class="border border-slate-200">Subject</th>
+        <th class="border border-slate-200">Date</th>
+        <th class="border border-slate-200">From</th>
+        <th colspan="2" class="border border-slate-200">To</th>
       </tr>
     </thead>
     <tbody>
       <tr v-for="email in emails" :key="email.id">
-        <td>{{ email.subject }}</td>
-        <td>{{ email.sent_at }}</td>
-        <td>{{ email.from }}</td>
-        <td>{{ email.to[0] }}</td>
-        <td>
+        <td class="border border-slate-200">{{ email.subject }}</td>
+        <td class="border border-slate-200">{{ email.sent_at }}</td>
+        <td class="border border-slate-200">{{ email.from }}</td>
+        <td class="border border-slate-200">{{ email.to[0] }}</td>
+        <td class="border border-slate-200">
           <button @click="handleSelect(email)" class="select">
             <FontAwesomeIcon :icon="faEye" />
           </button>

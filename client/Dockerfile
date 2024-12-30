@@ -8,6 +8,8 @@ COPY public ./public
 COPY index.html ./
 COPY jsconfig.json ./
 COPY vite.config.js ./
+COPY postcss.config.js ./
+COPY tailwind.config.js ./
 COPY .env ./
 
 RUN npm install http-server -g

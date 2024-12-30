@@ -104,10 +104,17 @@ table.emails {
   table-layout: fixed;
 }
 
+table.emails th {
+  padding: 0.5rem;
+  background-color: #f4f4f4;
+  text-align: left;
+}
+
 table.emails td {
   width: 20%;
   white-space: pre-wrap;
-  word-break: break-word; 
+  word-break: break-word;
+  padding: 0.5rem; 
 }
 
 table.emails td button {
