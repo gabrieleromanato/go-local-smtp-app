@@ -14,8 +14,8 @@ const handleLogout = () => {
 </script>
 
 <template>
-  <nav class="navigation">
-    <div class="xl:container mx-auto flex justify-between items-center">
+  <nav class="navigation mt-8 mb-8">
+    <div class="bg-white shadow-md p-4 rounded-lg xl:container mx-auto flex justify-between items-center">
       <div class="logo">
         <RouterLink to="/">
           <span class="visually-hidden">Emails</span>

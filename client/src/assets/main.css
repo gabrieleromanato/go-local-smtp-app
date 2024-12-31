@@ -22,8 +22,8 @@ textarea.form-control {
   width: 25%;
   margin: 0 auto;
   padding: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 0.20rem;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
   background-color: #fff;
 }
 

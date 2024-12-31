@@ -16,7 +16,7 @@ const handleReset = () => {
 </script>
 
 <template>
-    <form class="search-form d-flex align-items-center">
+    <form class="search-form flex align-center">
         <input type="text" v-model="query" class="form-control me-2" placeholder="Search" />
         <button @click="handleSearch" type="button" class="btn me-2">Search</button>
         <button @click="handleReset" type="button" class="btn">Clear</button>

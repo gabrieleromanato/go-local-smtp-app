@@ -128,7 +128,7 @@ onMounted(() => {
 
 <template>
   <div class="home-view">
-    <section class="xl:container mx-auto">
+    <section class="xl:container mx-auto bg-white shadow-md p-4 rounded-lg">
       <div class="actions flex justify-between items-center">
         <button class="btn" @click="emailFormVisible = !emailFormVisible">
           <FontAwesomeIcon :icon="faPaperPlane" />

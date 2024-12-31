@@ -77,3 +77,35 @@ button {
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-control {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 0.25rem;
+  display: block;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.btn-block {
+  display: block;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.form-group .form-control {
+  width: 100%;
+}
+
+textarea.form-control {
+  height: 200px;
+}
