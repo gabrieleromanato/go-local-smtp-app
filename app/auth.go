@@ -71,9 +71,6 @@ func HandleLogin(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while creating the database"})
 		return
 	}
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while creating the database"})
-	}
 	session := Session{store: emailStore}
 	loginValid = session.UserExists(email, password)
 	if !loginValid {
