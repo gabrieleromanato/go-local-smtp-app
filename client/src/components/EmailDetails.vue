@@ -36,10 +36,13 @@ watch(() => props.active, (newVal) => {
     if (newVal) {
         attachments.value = props.email.attachments.map(attachment => {
             const url = `${BASE_URL}/attachments/${attachment.filename}`;
+            const type = getFileType(attachment.filename);
+            const content = attachment.content;
+            const src = /^attachments/.test(content) ? url : `data:${attachment.type};base64,${content}`;
             return {
                 name: attachment.filename,
-                url: url,
-                type: getFileType(attachment.filename)
+                url: src,
+                type: type
             };
         });
     }
@@ -63,12 +66,12 @@ watch(() => props.active, (newVal) => {
         <div class="email-details__attachments" v-if="attachments.length > 0">
             <ul>
                 <li v-for="attachment in attachments" :key="attachment.name">
-                    <a v-if="attachment.type && attachment.type !== 'image'" :href="attachment.url" target="_blank" class="document-attachment">
+                    <a v-if="attachment.type && attachment.type !== 'image'" :href="attachment.url" :download="attachment.name" class="document-attachment">
                         <FontAwesomeIcon :icon="faFile" />
                         <div>{{ attachment.name }}</div>
                     </a>
                     <figure v-if="attachment.type === 'image'" class="image-attachment">
-                      <a :href="attachment.url" target="_blank">  
+                      <a :href="attachment.url" :download="attachment.name">  
                         <img :src="attachment.url" :alt="attachment.name" class="img-fluid" />
                         <figcaption>{{ attachment.name }}</figcaption>
                       </a>
