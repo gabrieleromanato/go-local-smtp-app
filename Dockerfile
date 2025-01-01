@@ -10,6 +10,8 @@ RUN go mod download
 
 RUN mkdir app
 COPY app ./app
+RUN mkdir ssl
+COPY ssl ./ssl
 RUN mkdir migrations
 COPY migrations ./migrations
 COPY main.go ./

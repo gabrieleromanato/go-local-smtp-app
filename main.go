@@ -63,7 +63,9 @@ func main() {
 		api.POST("/emails", app.SendEmail(store))
 	}
 	webServerPort := "0.0.0.0:" + os.Getenv("WEB_SERVER_PORT")
-	if err := r.Run(webServerPort); err != nil {
+	sslKey := "./ssl/site-key.pem"
+	sslCert := "./ssl/site.pem"
+	if err := r.RunTLS(webServerPort, sslCert, sslKey); err != nil {
 		log.Fatalf("Error while starting the web server: %v", err)
 	}
 }
