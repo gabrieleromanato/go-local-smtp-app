@@ -41,6 +41,27 @@ type EmailResponse struct {
 	Page   int     `json:"page"`
 }
 
+func populateUsersTableFromAuthFile(db *sql.DB, authFile string) error {
+	lines := strings.Split(authFile, "\n")
+	for _, line := range lines {
+		if strings.TrimSpace(line) == "" {
+			continue
+		}
+		parts := strings.Split(line, ":")
+		if len(parts) != 2 {
+			return fmt.Errorf("invalid auth file format")
+		}
+		email := parts[0]
+		password := parts[1]
+		encPassword := HashString(password)
+		_, err := db.Exec("INSERT INTO users (email, password) VALUES (?, ?)", email, encPassword)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func applyMigrations(db *sql.DB, migrationsDir string) error {
 	entries, err := os.ReadDir(migrationsDir)
 	if err != nil {
@@ -106,6 +127,18 @@ func NewEmailStore(dsn string) (*EmailStore, error) {
 	err = applyMigrations(db, "./migrations")
 	if err != nil {
 		return nil, err
+	}
+
+	var count int
+	err = db.QueryRow("SELECT COUNT(*) FROM users").Scan(&count)
+	if err != nil {
+		return nil, err
+	}
+	if count == 0 {
+		authFile, _ := os.ReadFile("./authfile")
+		if err := populateUsersTableFromAuthFile(db, string(authFile)); err != nil {
+			return nil, err
+		}
 	}
 
 	return &EmailStore{Db: db}, nil

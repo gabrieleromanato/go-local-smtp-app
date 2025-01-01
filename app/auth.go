@@ -58,28 +58,32 @@ func AuthMiddleware() gin.HandlerFunc {
 }
 
 func HandleLogin(c *gin.Context) {
-	users := getUsernameAndPasswordFromFile()
 	loginValid := false
 	var body User
 	if err := c.ShouldBindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	for _, user := range users {
-		if user.Email == body.Email && user.Password == HashString(body.Password) {
-			loginValid = true
-			token, err := CreateJWT(user.Email)
-			if err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-				return
-			}
-			c.JSON(http.StatusOK, gin.H{"token": token})
-			return
-		}
+	email := body.Email
+	password := body.Password
+	emailStore, err := NewEmailStore(GetDSN())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while creating the database"})
+		return
 	}
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while creating the database"})
+	}
+	session := Session{store: emailStore}
+	loginValid = session.UserExists(email, password)
 	if !loginValid {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
 	}
+	token, err := CreateJWT(email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while creating the token"})
+	}
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
 func CheckTokenExpiration(c *gin.Context) {

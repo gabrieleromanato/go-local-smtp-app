@@ -21,6 +21,16 @@ type Session struct {
 	buffer strings.Builder
 }
 
+func (s *Session) UserExists(email, password string) bool {
+	encPassword := HashString(password)
+	var count int
+	err := s.store.Db.QueryRow("SELECT COUNT(*) FROM users WHERE email = ? AND password = ?", email, encPassword).Scan(&count)
+	if err != nil {
+		return false
+	}
+	return count > 0
+}
+
 // Mail accetta il mittente dell'email
 func (s *Session) Mail(from string, opts *smtp.MailOptions) error {
 	s.from = from
@@ -87,15 +97,8 @@ func (s *Session) AuthMechanisms() []string {
 }
 
 func (s *Session) Auth(mech string) (sasl.Server, error) {
-	users := getUsernameAndPasswordFromFile()
 	return sasl.NewPlainServer(func(identity, username, password string) error {
-		found := false
-		for _, user := range users {
-			if username == user.Email && HashString(password) == user.Password {
-				found = true
-				break
-			}
-		}
+		found := s.UserExists(username, password)
 		if !found {
 			return errors.New("Authentication failed")
 		}
