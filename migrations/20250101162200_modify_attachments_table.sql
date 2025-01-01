@@ -1,0 +1,2 @@
+ALTER TABLE attachments
+MODIFY COLUMN content LONGTEXT;
