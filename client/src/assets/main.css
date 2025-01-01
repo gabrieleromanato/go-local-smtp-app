@@ -172,10 +172,12 @@ table.emails td button {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .email-details__attachments li {
   margin-right: 1rem;
+  margin-bottom: 1rem;
 }
 
 .email-details__attachments li:last-child {
