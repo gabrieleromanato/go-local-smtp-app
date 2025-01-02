@@ -28,6 +28,10 @@
     font-weight: 300;
 }
 
+:root {
+  --main-color: #ffd300;
+}
+
 * {
   margin: 0;
   padding: 0;

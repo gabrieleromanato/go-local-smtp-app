@@ -7,9 +7,9 @@ textarea.form-control {
 .btn {
   padding: 0.5rem 1rem;
   font-size: 1rem;
-  border: 1px solid #ffd300;
+  border: 1px solid var(--main-color);
   border-radius: 0.20rem;
-  background-color: #ffd300;
+  background-color: var(--main-color);
   color: #000;
   cursor: pointer;
 }
@@ -68,7 +68,7 @@ textarea.form-control {
 
 .navigation ul li a:hover,
 .navigation ul li button:hover {
-  border-bottom: 2px solid #ffd300;
+  border-bottom: 2px solid var(--main-color);
 }
 
 .logo {
@@ -239,7 +239,7 @@ table.emails td button {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #ffd300;
+  background-color: var(--main-color);
   color: #000;
 }
 
@@ -288,7 +288,7 @@ table.emails td button {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #ffd300;
+  background-color: var(--main-color);
 }
 
 .actions {
@@ -313,9 +313,9 @@ table.emails td button {
   display: inline-block;
   padding: 0.5rem 1rem;
   font-size: 1rem;
-  border: 1px solid #ffd300;
+  border: 1px solid var(--main-color);
   border-radius: 0.20rem;
-  background-color: #ffd300;
+  background-color: var(--main-color);
   cursor: pointer;
   margin-top: 0.7rem;
 }
@@ -407,9 +407,9 @@ table.emails td button {
 .api-details-toggle__button {
   padding: 0.5rem 1rem;
   font-size: 1rem;
-  border: 1px solid #ffd300;
+  border: 1px solid var(--main-color);
   border-radius: 0.20rem;
-  background-color: #ffd300;
+  background-color: var(--main-color);
   color: #000;
   cursor: pointer;
 }
