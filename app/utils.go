@@ -111,6 +111,7 @@ func SendEmailViaSMTP(email Email, attachments []string) error {
 	message.SetHeader("To", email.To...)
 	message.SetHeader("Subject", email.Subject)
 	message.SetBody("text/plain", email.Body)
+	message.AddAlternative("text/html", email.BodyHTML)
 
 	// Attach files
 	for _, attachment := range attachments {

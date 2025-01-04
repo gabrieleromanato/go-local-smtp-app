@@ -13,6 +13,7 @@ const emits = defineEmits(["close", "send"]);
 const message = ref({
   email: "",
   message: "",
+  message_html: "",
   subject: "",
   recipient: "",
   attachments: [],
@@ -28,6 +29,7 @@ const handleSubmit = () => {
     message.value = {
       email: "",
       message: "",
+      message_html: "",
       subject: "",
       recipient: "",
       attachments: [],
@@ -54,6 +56,10 @@ const handleSubmit = () => {
       <div class="form-group">
         <label class="form-label">Message</label>
         <textarea class="form-control" v-model="message.message"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">HTML Message</label>
+        <textarea class="form-control" v-model="message.message_html"></textarea>
       </div>
       <div class="form-group">
         <label class="form-label">Recipient</label>

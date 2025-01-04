@@ -54,10 +54,11 @@ func SendEmail(store *EmailStore) gin.HandlerFunc {
 		to := form.Value["recipient"][0]
 		recipients := strings.Split(to, ",")
 		email := Email{
-			From:    form.Value["email"][0],
-			To:      recipients,
-			Subject: form.Value["subject"][0],
-			Body:    form.Value["message"][0],
+			From:     form.Value["email"][0],
+			To:       recipients,
+			Subject:  form.Value["subject"][0],
+			Body:     form.Value["message"][0],
+			BodyHTML: form.Value["message_html"][0],
 		}
 		attachments := form.File["attachments"]
 		// Save attachments to disk temporarily

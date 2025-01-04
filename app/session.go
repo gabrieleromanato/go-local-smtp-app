@@ -53,11 +53,9 @@ func (s *Session) Data(r io.Reader) error {
 
 	subject := env.GetHeader("Subject")
 	body := env.Text
-	if body == "" {
-		body = env.HTML
-	}
+	bodyHTML := env.HTML
 
-	emailId, err := s.store.SaveEmail(s.from, s.to, subject, body)
+	emailId, err := s.store.SaveEmail(s.from, s.to, subject, body, bodyHTML)
 	if err != nil {
 		return fmt.Errorf("Error while saving the email: %w", err)
 	}

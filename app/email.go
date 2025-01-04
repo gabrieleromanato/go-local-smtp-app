@@ -31,6 +31,7 @@ type Email struct {
 	To          []string     `json:"to"`
 	Subject     string       `json:"subject"`
 	Body        string       `json:"body"`
+	BodyHTML    string       `json:"body_html"`
 	SentAt      string       `json:"sent_at"`
 	Attachments []Attachment `json:"attachments"`
 }
@@ -144,10 +145,10 @@ func NewEmailStore(dsn string) (*EmailStore, error) {
 	return &EmailStore{Db: db}, nil
 }
 
-func (store *EmailStore) SaveEmail(from string, to []string, subject, body string) (int, error) {
+func (store *EmailStore) SaveEmail(from string, to []string, subject, body string, bodyHTML string) (int, error) {
 	toString := strings.Join(to, ", ")
-	query := `INSERT INTO emails (from_email, to_email, subject, body) VALUES (?, ?, ?, ?)`
-	result, err := store.Db.Exec(query, from, toString, subject, body)
+	query := `INSERT INTO emails (from_email, to_email, subject, body, body_html) VALUES (?, ?, ?, ?, ?)`
+	result, err := store.Db.Exec(query, from, toString, subject, body, bodyHTML)
 	if err != nil {
 		return 0, err
 	}
@@ -210,9 +211,9 @@ func (store *EmailStore) ListEmails(page int) (EmailResponse, error) {
 
 	emails := []Email{}
 	for rows.Next() {
-		var from, to, subject, body, sentAt string
+		var from, to, subject, body, bodyHTML, sentAt string
 		var id int
-		rows.Scan(&id, &from, &to, &subject, &body, &sentAt)
+		rows.Scan(&id, &from, &to, &subject, &body, &bodyHTML, &sentAt)
 		attachments, _ := store.GetEmailAttachments(id)
 		email := Email{
 			ID:          id,
@@ -220,6 +221,7 @@ func (store *EmailStore) ListEmails(page int) (EmailResponse, error) {
 			To:          strings.Split(to, ", "),
 			Subject:     subject,
 			Body:        body,
+			BodyHTML:    bodyHTML,
 			SentAt:      sentAt,
 			Attachments: attachments}
 		emails = append(emails, email)
@@ -247,8 +249,8 @@ func (store *EmailStore) SearchEmails(query string, page int) (EmailResponse, er
 
 	pages := (total + perPage - 1) / perPage
 
-	sqlQuery := "SELECT * FROM emails WHERE subject LIKE ? OR body LIKE ? ORDER BY sent_at DESC LIMIT ? OFFSET ?"
-	rows, err := store.Db.Query(sqlQuery, "%"+query+"%", "%"+query+"%", perPage, offset)
+	sqlQuery := "SELECT * FROM emails WHERE subject LIKE ? OR body LIKE ? OR body_html LiKE ? ORDER BY sent_at DESC LIMIT ? OFFSET ?"
+	rows, err := store.Db.Query(sqlQuery, "%"+query+"%", "%"+query+"%", "%"+query+"%", perPage, offset)
 	if err != nil {
 		return EmailResponse{}, err
 	}
@@ -256,9 +258,9 @@ func (store *EmailStore) SearchEmails(query string, page int) (EmailResponse, er
 
 	emails := []Email{}
 	for rows.Next() {
-		var from, to, subject, body, sentAt string
+		var from, to, subject, body, bodyHTML, sentAt string
 		var id int
-		if err := rows.Scan(&id, &from, &to, &subject, &body, &sentAt); err != nil {
+		if err := rows.Scan(&id, &from, &to, &subject, &body, &bodyHTML, &sentAt); err != nil {
 			log.Println("Error scanning row:", err)
 			continue
 		}
@@ -269,6 +271,7 @@ func (store *EmailStore) SearchEmails(query string, page int) (EmailResponse, er
 			To:          strings.Split(to, ", "),
 			Subject:     subject,
 			Body:        body,
+			BodyHTML:    bodyHTML,
 			SentAt:      sentAt,
 			Attachments: attachments}
 		emails = append(emails, email)

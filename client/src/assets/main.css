@@ -228,6 +228,14 @@ table.emails td button {
   margin-top: 1rem;
 }
 
+.email-details__html {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 0.20rem;
+  background-color: #f4f4f4;
+}
+
 .email-details__close {
   cursor: pointer;
   font-size: 1.5rem;

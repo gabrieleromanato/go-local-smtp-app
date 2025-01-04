@@ -60,8 +60,11 @@ watch(() => props.active, (newVal) => {
             <h2 class="email-details__title">{{ email.subject }}</h2>
             <p  class="email-details__date">{{ email.sent_at }}</p>
         </div>
-        <div class="email-details__body">
+        <div class="email-details__body" v-if="email.body">
             <p>{{ email.body }}</p>
+        </div>
+        <div class="email-details__html" v-if="email.body_html">
+            <div v-html="email.body_html"></div>
         </div>
         <div class="email-details__attachments" v-if="attachments.length > 0">
             <ul>

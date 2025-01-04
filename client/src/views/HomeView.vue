@@ -26,6 +26,7 @@ const email = ref({
   from: "",
   to: [],
   body: "",
+  body_html: "",
   attachments: [],
 });
 const active = ref(false);
