@@ -230,10 +230,7 @@ table.emails td button {
 
 .email-details__html {
   margin-top: 1rem;
-  padding: 1rem;
   border: 1px solid #ccc;
-  border-radius: 0.20rem;
-  background-color: #f4f4f4;
 }
 
 .email-details__close {
@@ -420,4 +417,11 @@ table.emails td button {
   background-color: var(--main-color);
   color: #000;
   cursor: pointer;
+}
+
+iframe.body-html {
+  width: 100%;
+  height: 250px;
+  border: none;
+  display: block;
 }

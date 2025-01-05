@@ -2,6 +2,7 @@
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faTimes, faFile } from '@fortawesome/free-solid-svg-icons';
 import { ref, watch } from 'vue';
+import EmailBodyHTML from './EmailBodyHTML.vue';
 
 const props = defineProps({
     email: Object,
@@ -64,7 +65,7 @@ watch(() => props.active, (newVal) => {
             <p>{{ email.body }}</p>
         </div>
         <div class="email-details__html" v-if="email.body_html">
-            <div v-html="email.body_html"></div>
+            <EmailBodyHTML :body="email.body_html" />
         </div>
         <div class="email-details__attachments" v-if="attachments.length > 0">
             <ul>
