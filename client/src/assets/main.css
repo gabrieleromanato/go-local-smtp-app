@@ -425,3 +425,30 @@ iframe.body-html {
   border: none;
   display: block;
 }
+
+.email-details-tabs {
+  margin-top: 1rem;
+}
+
+.email-details-tabs ul {
+  display: flex;
+  list-style: none;
+}
+
+.email-details-tabs ul li {
+  margin-right: 1rem;
+}
+
+.email-details-tabs ul li button {
+  color: #000;
+  text-decoration: none;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding-bottom: 2px;
+  border-bottom: 2px solid transparent;
+}
+
+.email-details-tabs ul li.active button {
+  border-bottom: 2px solid var(--main-color);
+}

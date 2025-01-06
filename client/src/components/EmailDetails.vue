@@ -9,6 +9,8 @@ const props = defineProps({
     active: Boolean
 });
 
+const activeTab = ref('Text');
+
 defineEmits(['close']);
 
 const attachments = ref([]);
@@ -61,11 +63,18 @@ watch(() => props.active, (newVal) => {
             <h2 class="email-details__title">{{ email.subject }}</h2>
             <p  class="email-details__date">{{ email.sent_at }}</p>
         </div>
-        <div class="email-details__body" v-if="email.body">
+      <div class="email-details-tabs"> 
+        <ul>
+            <li v-for="tab in ['Text', 'HTML']" :key="tab" :class="{'active': activeTab === tab}">
+                <button @click="activeTab = tab">{{ tab }}</button>
+            </li>
+        </ul> 
+        <div :class="{'visually-hidden': activeTab !== 'Text'}" class="email-details__body" v-if="email.body">
             <p>{{ email.body }}</p>
         </div>
-        <div class="email-details__html" v-if="email.body_html">
+        <div :class="{'visually-hidden': activeTab !== 'HTML'}" class="email-details__html" v-if="email.body_html">
             <EmailBodyHTML :body="email.body_html" />
+        </div>
         </div>
         <div class="email-details__attachments" v-if="attachments.length > 0">
             <ul>
