@@ -53,6 +53,7 @@ func main() {
 
 	r.GET("/check-token", app.CheckTokenExpiration)
 	r.POST("/login", app.HandleLogin)
+	r.POST("/register", app.RegisterUser)
 	r.Use(app.AuthMiddleware())
 
 	api := r.Group("/api")

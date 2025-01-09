@@ -9,6 +9,15 @@ export async function login(data) {
     }
 }
 
+export async function register(data) {
+    try {
+        const response = await api.post("/register", data);
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+}
+
 export function logout() {
     localStorage.removeItem("app-token");
 }

@@ -21,6 +21,15 @@ type Session struct {
 	buffer strings.Builder
 }
 
+func (s *Session) CreateUser(email, password string) error {
+	encPassword := HashString(password)
+	_, err := s.store.Db.Exec("INSERT INTO users (email, password) VALUES (?, ?)", email, encPassword)
+	if err != nil {
+		return fmt.Errorf("Error while creating the user: %w", err)
+	}
+	return nil
+}
+
 func (s *Session) UserExists(email, password string) bool {
 	encPassword := HashString(password)
 	var count int

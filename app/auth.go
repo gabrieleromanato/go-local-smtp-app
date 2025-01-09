@@ -83,6 +83,33 @@ func HandleLogin(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"token": token})
 }
 
+func RegisterUser(c *gin.Context) {
+	var body User
+	if err := c.ShouldBindJSON(&body); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	email := body.Email
+	password := body.Password
+	emailStore, err := NewEmailStore(GetDSN())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while creating the database"})
+		return
+	}
+	session := Session{store: emailStore}
+	isUserRegistered := session.UserExists(email, password)
+	if isUserRegistered {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User already exists"})
+		return
+	}
+	err = session.CreateUser(email, password)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while registering the user"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "User registered successfully"})
+}
+
 func CheckTokenExpiration(c *gin.Context) {
 	secret := os.Getenv("JWT_SECRET")
 	tokenString := c.GetHeader("Authorization")

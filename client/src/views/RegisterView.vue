@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
-import { login, setToken  } from '@/api/auth';
-import { useRouter, RouterLink } from 'vue-router';
+import { register } from '@/api/auth';
+import { useRouter } from 'vue-router';
 
 const userData = ref({
     email: '',
@@ -15,20 +15,19 @@ const router = useRouter();
 const handleSubmit = async () => {
     message.value = '';
     try {
-        const response = await login(userData.value);
-        if(response.token) {
-            setToken(response.token);
-            router.push('/');
+        const response = await register(userData.value);
+        if(response.message) {
+            router.push('/login');
         } else {
-            message.value = 'Error during login';
+            message.value = 'Error during registration';
         }
     } catch (error) {
         console.error(error);
-        message.value = 'Error during login';
+        message.value = 'Error during registration';
     }
 };
 
-document.title = 'Axio SMTP Server | Login';
+document.title = 'Axio SMTP Server | Register';
 </script>
 
 <template>
@@ -45,13 +44,10 @@ document.title = 'Axio SMTP Server | Login';
         </div>
         <div class="form-group">
             <label class="form-label">Password</label>
-            <input v-model="userData.password" type="password" class="form-control" />
+            <input v-model="userData.password" type="text" class="form-control" />
         </div>
         <div v-if="message" class="form-error">{{ message }}</div>
-        <button type="submit" class="btn">Login</button>
-        <div class="register-link">
-            <RouterLink to="/register">Register</RouterLink>
-        </div>
+        <button type="submit" class="btn">Register</button>
     </form>
     </div>
 </template>

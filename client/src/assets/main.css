@@ -452,3 +452,22 @@ iframe.body-html {
 .email-details-tabs ul li.active button {
   border-bottom: 2px solid var(--main-color);
 }
+
+.form-error {
+  color: #d00;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.register-link {
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.register-link a,
+.register-link a:hover,
+.register-link a:visited {
+  color: #000;
+  text-decoration: none;
+}
