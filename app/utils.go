@@ -136,3 +136,11 @@ func SendEmailViaSMTP(email Email, attachments []string) error {
 
 	return nil
 }
+
+func IsValidPassword(password string) bool {
+	minPasswordLength, _ := strconv.Atoi(os.Getenv("MIN_PASSWORD_LENGTH"))
+	if len(password) < minPasswordLength {
+		return false
+	}
+	return true
+}

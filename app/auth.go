@@ -102,6 +102,10 @@ func RegisterUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "User already exists"})
 		return
 	}
+	if !IsValidPassword(password) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Password is too short"})
+		return
+	}
 	err = session.CreateUser(email, password)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while registering the user"})
