@@ -89,7 +89,7 @@ func SaveAttachmentToFile(filename string, data []byte) error {
 	return nil
 }
 
-func SendEmailViaSMTP(email Email, attachments []string) error {
+func SendEmailViaSMTP(email Email, attachments []string, userId int) error {
 	smtpUser := os.Getenv("SMTP_USER")
 	smtpPassword := os.Getenv("SMTP_PASSWORD")
 	smtpHost := os.Getenv("SMTP_SERVER_HOST")
@@ -110,6 +110,7 @@ func SendEmailViaSMTP(email Email, attachments []string) error {
 	message.SetHeader("From", email.From)
 	message.SetHeader("To", email.To...)
 	message.SetHeader("Subject", email.Subject)
+	message.SetHeader("X-User-Id", strconv.Itoa(userId))
 	message.SetBody("text/plain", email.Body)
 	message.AddAlternative("text/html", email.BodyHTML)
 

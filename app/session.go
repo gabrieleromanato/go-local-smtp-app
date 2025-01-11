@@ -40,6 +40,16 @@ func (s *Session) UserExists(email, password string) bool {
 	return count > 0
 }
 
+func (s *Session) GetUserId(username, password string) (int, error) {
+	encPassword := HashString(password)
+	var id int
+	err := s.store.Db.QueryRow("SELECT id FROM users WHERE email = ? AND password = ?", username, encPassword).Scan(&id)
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
+}
+
 // Mail accetta il mittente dell'email
 func (s *Session) Mail(from string, opts *smtp.MailOptions) error {
 	s.from = from
@@ -63,8 +73,14 @@ func (s *Session) Data(r io.Reader) error {
 	subject := env.GetHeader("Subject")
 	body := env.Text
 	bodyHTML := env.HTML
-
-	emailId, err := s.store.SaveEmail(s.from, s.to, subject, body, bodyHTML)
+	userID := 1
+	if env.GetHeader("X-User-Id") != "" {
+		userID, err = strconv.Atoi(env.GetHeader("X-User-Id"))
+		if err != nil {
+			return fmt.Errorf("Error while parsing user ID: %w", err)
+		}
+	}
+	emailId, err := s.store.SaveEmail(userID, s.from, s.to, subject, body, bodyHTML)
 	if err != nil {
 		return fmt.Errorf("Error while saving the email: %w", err)
 	}

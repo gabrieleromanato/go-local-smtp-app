@@ -1,0 +1,2 @@
+ALTER TABLE emails
+ADD COLUMN user_id INT NOT NULL AFTER id;

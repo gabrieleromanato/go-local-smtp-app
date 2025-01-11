@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { login, setToken  } from '@/api/auth';
+import { login, setToken, setUserId  } from '@/api/auth';
 import { useRouter, RouterLink } from 'vue-router';
 
 const userData = ref({
@@ -18,6 +18,7 @@ const handleSubmit = async () => {
         const response = await login(userData.value);
         if(response.token) {
             setToken(response.token);
+            setUserId(response.userId);
             router.push('/');
         } else {
             message.value = 'Error during login';

@@ -80,7 +80,11 @@ func HandleLogin(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while creating the token"})
 	}
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	userId, err := session.GetUserId(email, password)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while getting the user ID"})
+	}
+	c.JSON(http.StatusOK, gin.H{"token": token, "userId": userId})
 }
 
 func RegisterUser(c *gin.Context) {

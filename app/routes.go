@@ -11,8 +11,10 @@ import (
 func GetEmails(store *EmailStore) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		page := c.DefaultQuery("page", "1")
+		user := c.DefaultQuery("user", "1")
 		pageInt, _ := strconv.Atoi(page)
-		emails, err := store.ListEmails(pageInt)
+		userInt, _ := strconv.Atoi(user)
+		emails, err := store.ListEmails(pageInt, userInt)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -24,9 +26,11 @@ func GetEmails(store *EmailStore) gin.HandlerFunc {
 func SearchForEmails(store *EmailStore) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		query := c.Query("query")
+		user := c.DefaultQuery("user", "1")
 		page := c.DefaultQuery("page", "1")
 		pageInt, _ := strconv.Atoi(page)
-		emails, err := store.SearchEmails(query, pageInt)
+		userInt, _ := strconv.Atoi(user)
+		emails, err := store.SearchEmails(query, pageInt, userInt)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -52,6 +56,8 @@ func SendEmail(store *EmailStore) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		form, _ := c.MultipartForm()
 		to := form.Value["recipient"][0]
+		userID := form.Value["user_id"][0]
+		userIDInt, _ := strconv.Atoi(userID)
 		recipients := strings.Split(to, ",")
 		email := Email{
 			From:     form.Value["email"][0],
@@ -68,7 +74,7 @@ func SendEmail(store *EmailStore) gin.HandlerFunc {
 			files = append(files, attachment.Filename)
 		}
 
-		err := SendEmailViaSMTP(email, files)
+		err := SendEmailViaSMTP(email, files, userIDInt)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return

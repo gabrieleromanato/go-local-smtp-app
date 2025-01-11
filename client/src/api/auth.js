@@ -20,10 +20,19 @@ export async function register(data) {
 
 export function logout() {
     localStorage.removeItem("app-token");
+    localStorage.removeItem("app-user-id");
 }
 
 export function setToken(token) {
     localStorage.setItem("app-token", token);
+}
+
+export function setUserId(userId) {
+    localStorage.setItem("app-user-id", userId);
+}
+
+export function getUserId() {
+    return localStorage.getItem("app-user-id");
 }
 
 export function getToken() {
