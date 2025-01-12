@@ -47,9 +47,11 @@ const data = ref({
                 body: {
                     email: 'string',
                     message: 'string',
+                    message_html: 'string',
                     subject: 'string',
                     recipient: 'string',
-                    attachments: 'array'
+                    attachments: 'array',
+                    user_id: 'number'
                 },
                 headers: {
                     Authorization: 'Bearer token'
