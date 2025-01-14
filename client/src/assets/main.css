@@ -136,6 +136,14 @@ table.emails td button {
   margin: 0 0.5rem;
 }
 
+.pagination button.active {
+  font-weight: bold;
+}
+
+.pagination button:disabled {
+  cursor: not-allowed;
+}
+
 .email-details-wrapper {
   position: fixed;
   top: 0;
